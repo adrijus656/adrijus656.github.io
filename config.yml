@@ -1,1 +1,105 @@
-
+{
+  "name": "Wilderness Whisper",
+  "type": "dark",
+  "colors": {
+    "editor.background": "#1a1a1a", // Deep forest night
+    "editor.foreground": "#d0c8b6", // Warm, earthy text
+    "editorCursor.foreground": "#66cdaa", // Teal, like a hidden spring
+    "editor.lineHighlightBackground": "#262626", // Subtle highlight
+    "editorGutter.background": "#1a1a1a", // Same as background
+    "editor.selectionBackground": "#335533", // Mossy green selection
+    "activityBar.background": "#161616", // Darker sidebar
+    "activityBar.foreground": "#d0c8b6", // Light sidebar icons
+    "sideBar.background": "#181818", // Slightly lighter sidebar
+    "sideBar.foreground": "#a09888", // Muted sidebar text
+    "panel.background": "#1c1c1c", // Even lighter panel
+    "panel.foreground": "#d0c8b6", // Light panel text
+    "statusBar.background": "#224422", // Deep jungle green status bar
+    "statusBar.foreground": "#d0c8b6", // Light status bar text
+    "statusBarItem.hoverBackground": "#336633", // Brighter green on hover
+    "textLink.foreground": "#66cdaa", // Teal links, like a river
+    "textLink.activeForeground": "#339966", // Deeper teal on active link
+    "button.background": "#448844", // Forest green buttons
+    "button.hoverBackground": "#55aa55", // Brighter on hover
+    "dropdown.background": "#202020", // Dark dropdown
+    "dropdown.foreground": "#d0c8b6", // Light dropdown text
+    "input.background": "#242424", // Dark input background
+    "input.foreground": "#d0c8b6", // Light input text
+    "list.hoverBackground": "#282828", // Subtle list hover
+    "list.activeSelectionBackground": "#335533", // Mossy green active selection
+    "diffEditor.insertedLineBackground": "#22442244", // Transparent green for insertions
+    "diffEditor.removedLineBackground": "#55222244"  // Transparent red for deletions
+  },
+  "tokenColors": [
+    {
+      "name": "Comment",
+      "scope": "comment",
+      "settings": {
+        "foreground": "#708060" // Muted olive green for comments
+      }
+    },
+    {
+      "name": "String",
+      "scope": "string",
+      "settings": {
+        "foreground": "#a0522d" // Earthy brown for strings
+      }
+    },
+    {
+      "name": "Number",
+      "scope": "constant.numeric",
+      "settings": {
+        "foreground": "#b5bd61" // Golden yellow for numbers
+      }
+    },
+    {
+      "name": "Keyword",
+      "scope": "keyword",
+      "settings": {
+        "foreground": "#5f87af" // Deep blue for keywords
+      }
+    },
+    {
+      "name": "Function",
+      "scope": "entity.name.function",
+      "settings": {
+        "foreground": "#66cdaa" // Teal for functions
+      }
+    },
+    {
+      "name": "Variable",
+      "scope": "variable",
+      "settings": {
+        "foreground": "#d0c8b6" // Light text for variables
+      }
+    },
+    {
+      "name": "Type",
+      "scope": "entity.name.type",
+      "settings": {
+        "foreground": "#8abeb7" // Seafoam green for types
+      }
+    },
+    {
+      "name": "Class",
+      "scope": "entity.name.class",
+      "settings": {
+        "foreground": "#8abeb7" // Seafoam green for classes
+      }
+    },
+    {
+      "name": "Operator",
+      "scope": "keyword.operator",
+      "settings": {
+        "foreground": "#d0c8b6" // Light text for operators
+      }
+    },
+    {
+      "name": "Punctuation",
+      "scope": "punctuation",
+      "settings": {
+        "foreground": "#a09888" // Muted text for punctuation
+      }
+    }
+  ]
+}
