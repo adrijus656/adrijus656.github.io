@@ -3,74 +3,96 @@
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
+    margin: 0; padding: 0;
     height: 100vh;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+    display: flex; justify-content: center; align-items: center;
     overflow: hidden;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
-.bg-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
+.vignette {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle, transparent 20%, black 150%);
+    z-index: 2; pointer-events: none;
 }
 
-/* The Droplet Shape */
-.drop {
+.bg-container { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+.heart {
     position: absolute;
-    width: 2px; /* Thin line */
-    height: 40px; /* Long line */
-    background: rgba(255, 255, 255, 0.05); /* Very subtle normally */
-    border-radius: 2px;
     will-change: transform;
-    transition: background 0.2s, box-shadow 0.2s, height 0.3s;
+    pointer-events: none;
+    filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.2));
 }
 
 #card {
-    position: relative;
-    z-index: 10;
-    background: rgba(10, 10, 10, 0.85);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 45px;
-    border-radius: 50px;
+    position: relative; z-index: 10;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 60px 40px;
+    border-radius: 60px;
     text-align: center;
-    box-shadow: 0 0 50px rgba(0,0,0,1);
     width: 320px;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+    transition: transform 0.3s ease-out;
 }
 
-#main-gif {
-    width: 160px;
-    border-radius: 25px;
-    margin-bottom: 20px;
+.music-icon-box {
+    position: relative;
+    width: 80px; height: 80px;
+    margin: 0 auto 30px;
+    display: flex; justify-content: center; align-items: center;
 }
 
-h1 { color: white; font-weight: 300; font-size: 1.5rem; margin-bottom: 25px; }
+.heart-icon { font-size: 2.8rem; z-index: 2; filter: drop-shadow(0 0 10px var(--pink)); }
 
-.buttons { display: flex; gap: 15px; justify-content: center; }
+.pulse-ring {
+    position: absolute;
+    width: 100%; height: 100%;
+    border: 1px solid var(--pink);
+    border-radius: 50%;
+    animation: pulse 3s infinite;
+    opacity: 0;
+}
+.pulse-ring:nth-child(2) { animation-delay: 1.5s; }
+
+@keyframes pulse {
+    0% { transform: scale(0.6); opacity: 0.6; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+h1 {
+    color: white; font-weight: 200; letter-spacing: 4px;
+    margin-bottom: 40px; text-transform: lowercase;
+    font-size: 1.3rem;
+}
+
+#letter-status {
+    display: none;
+    color: #888;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-top: -20px;
+    margin-bottom: 30px;
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.buttons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
 
 button {
-    padding: 12px 32px;
-    font-size: 1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: 0.2s;
+    width: 100%;
+    padding: 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer; font-size: 0.9rem; letter-spacing: 2px;
+    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+    background: transparent; color: white;
 }
 
-#yes-btn { background: var(--pink); color: white; box-shadow: 0 0 15px var(--pink); }
-#no-btn { background: #222; color: #888; }
+#yes-btn { background: white; color: black; border: none; font-weight: 600; }
+#yes-btn:hover { background: var(--pink); color: white; box-shadow: 0 0 40px var(--pink); transform: scale(1.05); }
 
-button:hover { transform: scale(1.05); }
+#no-btn:hover { border-color: rgba(255, 0, 0, 0.4); color: #ff4d6d; }
