@@ -1,0 +1,47 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background-image: url("https://media.tenor.com/0jDvy_gaK7EAAAAC/milk-bear-sending-hearts.gif");
+  background-size: cover;
+  background-position: center;
+  font-family: Arial, sans-serif;
+}
+
+.overlay {
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 30px;
+}
+
+.buttons button {
+  padding: 15px 30px;
+  font-size: 18px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.buttons button:first-child {
+  background-color: pink;
+}
+
+.buttons button:last-child {
+  background-color: #ff6b6b;
+  color: white;
+}
