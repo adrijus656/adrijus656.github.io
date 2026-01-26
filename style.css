@@ -17,77 +17,60 @@ body {
 
 .bg-container {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
     pointer-events: none;
 }
 
+/* The Droplet Shape */
 .drop {
     position: absolute;
-    width: 2px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 2px; /* Thin line */
+    height: 40px; /* Long line */
+    background: rgba(255, 255, 255, 0.05); /* Very subtle normally */
     border-radius: 2px;
     will-change: transform;
-    /* Faster transitions for more "snappy" interaction */
-    transition: background 0.2s, box-shadow 0.2s;
+    transition: background 0.2s, box-shadow 0.2s, height 0.3s;
 }
 
 #card {
     position: relative;
     z-index: 10;
-    background: rgba(15, 15, 15, 0.8);
+    background: rgba(10, 10, 10, 0.85);
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 50px;
-    border-radius: 40px; /* The soft edges you liked */
+    padding: 45px;
+    border-radius: 50px;
     text-align: center;
-    box-shadow: 0 0 60px rgba(0,0,0,1), 0 0 20px rgba(255, 77, 109, 0.05);
+    box-shadow: 0 0 50px rgba(0,0,0,1);
     width: 320px;
 }
 
 #main-gif {
-    width: 100%;
-    max-width: 200px;
-    border-radius: 25px; /* Matching the box softness */
-    margin-bottom: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 160px;
+    border-radius: 25px;
+    margin-bottom: 20px;
 }
 
-h1 {
-    color: white;
-    font-size: 1.6rem;
-    font-weight: 500;
-    margin-bottom: 30px;
-}
+h1 { color: white; font-weight: 300; font-size: 1.5rem; margin-bottom: 25px; }
 
-.buttons {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-}
+.buttons { display: flex; gap: 15px; justify-content: center; }
 
 button {
-    padding: 14px 35px;
-    font-size: 1.1rem;
+    padding: 12px 32px;
+    font-size: 1rem;
     font-weight: 600;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: 0.2s;
 }
 
-#yes-btn {
-    background: var(--pink);
-    color: white;
-    box-shadow: 0 0 20px var(--pink);
-}
+#yes-btn { background: var(--pink); color: white; box-shadow: 0 0 15px var(--pink); }
+#no-btn { background: #222; color: #888; }
 
-#no-btn {
-    background: #222;
-    color: #999;
-}
-
-button:hover {
-    transform: scale(1.1);
-}
+button:hover { transform: scale(1.05); }
