@@ -40,6 +40,7 @@ h1 {
   border-radius: 12px;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.3s ease;
+  position: relative;
 }
 
 .buttons button:hover {
@@ -84,4 +85,16 @@ h1 {
 @keyframes float {
   from { top: 100%; opacity: 1; }
   to { top: -10%; opacity: 0; }
+}
+
+/* confetti hearts */
+.confetti-piece {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: confetti-fall 2s linear forwards;
+}
+
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
 }
