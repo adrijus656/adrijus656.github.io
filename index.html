@@ -3,18 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For My Girl ❤️</title>
+    <title>For You ❤️</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="vignette"></div>
     <div class="bg-container"></div>
 
     <div id="card">
-        <img id="main-gif" src="https://media.tenor.com/0jDvy_gaK7EAAAAC/milk-bear-sending-hearts.gif" alt="cute bear">
-        <h1 id="question">Will you be my valentine?</h1>
+        <div class="music-icon-box">
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="heart-icon">❤️</div>
+        </div>
+
+        <h1 id="question">will you be my valentine?</h1>
+        <p id="letter-status"></p>
+
         <div class="buttons" id="btn-container">
-            <button id="yes-btn" onclick="respond('yes')">Yes!</button>
-            <button id="no-btn" onclick="respond('no')">No</button>
+            <button id="yes-btn" onclick="respond('yes')">YES</button>
+            <button id="no-btn" onclick="respond('no')">NO</button>
         </div>
     </div>
 
