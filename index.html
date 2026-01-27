@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>adraa | core v4.9</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onclick="initSystem()">
+    <div class="cursor"></div><div class="cursor-follower"></div>
+    
+    <div class="video-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="background.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+    <canvas id="starfield"></canvas>
+
+    <div class="top-left-hud">
+        <div class="discord-card">
+            <div class="avatar-box">
+                <img id="discord-avatar" src="https://cdn.discordapp.com/embed/avatars/0.png">
+                <div id="status-dot" class="status-dot offline"></div>
+            </div>
+            <div class="status-text">
+                <span id="discord-name">SYSTEM</span>
+                <span id="discord-activity">SCANNING...</span>
+            </div>
+        </div>
+        <div class="weather-pill">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span id="vilnius-weather">VILNIUS: --°C</span>
+        </div>
+    </div>
+
+    <div class="top-right-hud">
+        <div class="uptime">UPTIME: <span id="uptime-val">00:00:00</span></div>
+        <div class="warp-system" id="warpSystem">
+            <div class="warp-panel">
+                <input type="range" id="speedRange" min="1" max="100" value="10" class="theme-slider">
+            </div>
+            <div class="warp-trigger" onclick="toggleWarp()"></div>
+        </div>
+    </div>
+
+    <main class="hero-container">
+        <div class="hero-content">
+            <img src="https://img1.picmix.com/output/stamp/normal/2/6/0/5/1775062_b3b85.gif" class="hero-gif">
+            <h1 class="hero-title">adraa</h1>
+            <p class="hero-tagline">experimenting with ai & code</p>
+            <div class="social-links">
+                <div class="icon-wrap" onclick="copyDiscord()">
+                    <i class="fa-brands fa-discord"></i>
+                    <span id="copy-toast">COPIED</span>
+                </div>
+                <a href="https://soundcloud.com/adra-adra-853007141" target="_blank"><i class="fa-brands fa-soundcloud"></i></a>
+                <a href="https://open.spotify.com" target="_blank"><i class="fa-brands fa-spotify"></i></a>
+                <a href="https://guns.lol/adraa" target="_blank"><i class="fa-solid fa-crosshairs"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <div class="music-player">
+        <div class="track-info"><span id="track-name">CLICK TO INITIALIZE</span></div>
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div class="time-info"><span id="curr-time">0:00</span><span id="total-time">0:00</span></div>
+
+        <div class="player-main-row">
+            <div class="vol-vertical-cont">
+                <input type="range" id="vol-control" min="0" max="100" step="1" value="50">
+                <i class="fa-solid fa-volume-high"></i>
+            </div>
+            <div class="vis-container" id="visualizer"></div>
+            <div class="player-controls">
+                <i class="fas fa-backward" onclick="prevTrack()"></i>
+                <div class="play-wrapper" onclick="toggleMusic()"><i class="fas fa-play" id="playBtn"></i></div>
+                <i class="fas fa-forward" onclick="nextTrack()"></i>
+            </div>
+        </div>
+
+        <iframe id="sc-widget" 
+                allow="autoplay"
+                src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false" 
+                style="display:none;"></iframe>
+    </div>
+
+    <div id="term-modal" class="term-hidden">
+        <div class="term-window">
+            <div class="term-nav"><span>CORE_SHELL_v4.9</span><button onclick="toggleTerminal()">[X]</button></div>
+            <div id="term-logs"></div>
+            <div class="term-input-row"><span>></span><input type="text" id="term-field" autocomplete="off" spellcheck="false"></div>
+        </div>
+    </div>
+    <div class="term-opener" onclick="toggleTerminal()"><i class="fa-solid fa-terminal"></i> TERMINAL</div>
+
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
