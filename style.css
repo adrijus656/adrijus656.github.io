@@ -1,98 +1,47 @@
 :root {
-    --pink: #ff4d6d;
+    --accent: #ff3b5c;
+    --text-main: #ffffff;
 }
 
 body {
     margin: 0; padding: 0;
-    height: 100vh;
-    background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+    height: 100vh; background: #020202;
     display: flex; justify-content: center; align-items: center;
-    overflow: hidden;
-    font-family: 'Outfit', sans-serif;
+    overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
 }
 
+#void-canvas { position: fixed; inset: 0; z-index: 1; }
 .vignette {
-    position: fixed; inset: 0;
-    background: radial-gradient(circle, transparent 20%, black 150%);
-    z-index: 2; pointer-events: none;
-}
-
-.bg-container { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-
-.heart {
-    position: absolute;
-    will-change: transform;
+    position: fixed; inset: 0; z-index: 2;
+    background: radial-gradient(circle, transparent 40%, black 140%);
     pointer-events: none;
-    filter: drop-shadow(0 0 5px rgba(255, 77, 109, 0.2));
 }
 
 #card {
     position: relative; z-index: 10;
-    background: rgba(255, 255, 255, 0.03);
+    width: 350px; padding: 60px 35px 45px;
+    background: rgba(20, 20, 20, 0.75);
     backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 60px 40px;
-    border-radius: 60px;
-    text-align: center;
-    width: 320px;
-    box-shadow: 0 50px 100px rgba(0,0,0,0.9);
-    transition: transform 0.3s ease-out;
+    border-radius: 40px; text-align: center;
+    overflow: hidden; 
+    box-shadow: 0 40px 100px rgba(0,0,0,0.9);
 }
 
-.music-icon-box {
-    position: relative;
-    width: 80px; height: 80px;
-    margin: 0 auto 30px;
-    display: flex; justify-content: center; align-items: center;
-}
+.progress-wrap { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: rgba(255, 255, 255, 0.03); }
+#progress-line { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 15px var(--accent); transition: 1s cubic-bezier(0.16, 1, 0.3, 1); }
 
-.heart-icon { font-size: 2.8rem; z-index: 2; filter: drop-shadow(0 0 10px var(--pink)); }
+.status-code { font-size: 0.6rem; color: rgba(255,255,255,0.3); letter-spacing: 4px; margin-bottom: 25px; }
+h1 { color: var(--text-main); font-weight: 200; font-size: 1.3rem; line-height: 1.5; margin-bottom: 40px; }
 
-.pulse-ring {
-    position: absolute;
-    width: 100%; height: 100%;
-    border: 1px solid var(--pink);
-    border-radius: 50%;
-    animation: pulse 3s infinite;
-    opacity: 0;
-}
-.pulse-ring:nth-child(2) { animation-delay: 1.5s; }
-
-@keyframes pulse {
-    0% { transform: scale(0.6); opacity: 0.6; }
-    100% { transform: scale(2); opacity: 0; }
-}
-
-h1 {
-    color: white; font-weight: 200; letter-spacing: 4px;
-    margin-bottom: 40px; text-transform: lowercase;
-    font-size: 1.3rem;
-}
-
-#letter-status {
-    display: none;
-    color: #888;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    margin-top: -20px;
-    margin-bottom: 30px;
-    animation: fadeIn 1s ease forwards;
-}
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-.buttons { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-
+.button-stack { display: flex; flex-direction: column; gap: 12px; }
 button {
-    width: 100%;
-    padding: 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.1);
-    cursor: pointer; font-size: 0.9rem; letter-spacing: 2px;
-    transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
-    background: transparent; color: white;
+    padding: 18px; border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-main); cursor: pointer; font-size: 0.85rem; letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
+button:hover { background: white; color: black; transform: translateY(-2px); }
 
-#yes-btn { background: white; color: black; border: none; font-weight: 600; }
-#yes-btn:hover { background: var(--pink); color: white; box-shadow: 0 0 40px var(--pink); transform: scale(1.05); }
-
-#no-btn:hover { border-color: rgba(255, 0, 0, 0.4); color: #ff4d6d; }
+#letter-status { display: none; color: var(--accent); font-size: 0.7rem; letter-spacing: 3px; margin-top: 30px; text-transform: uppercase; font-weight: 600; }
