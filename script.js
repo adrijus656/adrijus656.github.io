@@ -14,7 +14,18 @@ const questions = [
     { q: "Will you be my Valentine?", options: ["YES ❤️", "NO 💔"] }
 ];
 
-// --- Background ---
+// --- ONE-TIME CHECK ---
+window.onload = () => {
+    if (localStorage.getItem("sequenceComplete") === "true") {
+        quizContent.innerHTML = `
+            <div class="status-code">SESSION EXPIRED</div>
+            <h1>Your response has already been recorded. ❤️</h1>
+        `;
+        progressBar.style.width = "100%";
+    }
+};
+
+// --- Background Physics ---
 function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize);
 window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
@@ -45,7 +56,7 @@ const embers = Array.from({ length: 180 }, () => new Ember());
 function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); embers.forEach(e => e.draw()); requestAnimationFrame(animate); }
 animate();
 
-// --- Simplified Logic ---
+// --- Logic ---
 async function sendLog(msg) {
     try {
         await fetch(webhookUrl, {
@@ -57,21 +68,16 @@ async function sendLog(msg) {
 }
 
 function nextStep(choice) {
-    // Log the choice
     if (pointer === 0) {
         sendLog("Sequence Initiated");
     } else {
         sendLog(`Answered "${questions[pointer-1].q}" with: **${choice}**`);
     }
 
-    // Check if we have more questions to show
     if (pointer < questions.length) {
         const currentData = questions[pointer];
-        
-        // Update Progress
         progressBar.style.width = ((pointer / questions.length) * 100) + "%";
 
-        // Update Card UI
         quizContent.innerHTML = `
             <div class="status-code">STAGE: 0${pointer + 1}</div>
             <h1>${currentData.q}</h1>
@@ -79,15 +85,16 @@ function nextStep(choice) {
                 ${currentData.options.map(opt => `<button onclick="nextStep('${opt}')">${opt}</button>`).join('')}
             </div>
         `;
-        
         pointer++;
     } else {
-        // No more questions, trigger final screen
         finish(choice);
     }
 }
 
 function finish(finalAns) {
+    // LOCK THE SITE
+    localStorage.setItem("sequenceComplete", "true");
+    
     progressBar.style.width = "100%";
     if (finalAns.includes('YES')) {
         quizContent.innerHTML = `<div class="status-code">ACCESS: GRANTED</div><h1>Accepted. ❤️</h1>`;
