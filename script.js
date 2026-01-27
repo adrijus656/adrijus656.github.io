@@ -1,108 +1,101 @@
 const webhookUrl = "https://discord.com/api/webhooks/1465424477595631616/GAUugpZmy3QwDHEkhCG3oaHwil6Rwh5PpzJ2ictm_3GBw_SwFwBuLEV2L2RMbpJINSFn";
-const container = document.querySelector('.bg-container');
-const card = document.getElementById('card');
-const hearts = [];
-let mouseX = -1000;
-let mouseY = -1000;
+const canvas = document.getElementById('void-canvas');
+const ctx = canvas.getContext('2d');
+const progressBar = document.getElementById('progress-line');
+const quizContent = document.getElementById('quiz-content');
 
-// 1. Create Deep-Field Heart Rain
-for (let i = 0; i < 70; i++) {
-    const h = document.createElement('div');
-    h.classList.add('heart');
-    h.innerHTML = '❤️';
-    
-    // Randomize depth/size/speed
-    const size = 10 + Math.random() * 25;
-    const depth = size / 35; // 0 to 1
-    
-    const data = {
-        el: h,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        speed: 1 + (depth * 4),
-        size: size,
-        opacity: 0.05 + (depth * 0.1)
-    };
-    
-    h.style.fontSize = `${data.size}px`;
-    h.style.opacity = data.opacity;
-    if (depth < 0.4) h.style.filter = 'blur(2px)'; // Blur distant hearts
-    
-    container.appendChild(h);
-    hearts.push(data);
-}
+let mouse = { x: -1000, y: -1000, active: false };
+let pointer = 0;
 
-// 2. Interaction Listeners
-window.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    
-    // Subtle Card Tilt Effect
-    const xRotate = (window.innerHeight / 2 - e.clientY) / 25;
-    const yRotate = (e.clientX - window.innerWidth / 2) / 25;
-    card.style.transform = `rotateX(${xRotate}deg) rotateY(${yRotate}deg)`;
-});
+const questions = [
+    { q: "Is your heart racing yet?", options: ["A little", "Yes"] },
+    { q: "Do you believe some things are worth fighting for?", options: ["Always", "Definitely"] },
+    { q: "If we had the whole day together, would you be happy?", options: ["Very", "Yes!"] },
+    { q: "Will you be my Valentine?", options: ["YES ❤️", "NO 💔"] }
+];
 
-// 3. Animation Engine
-function update() {
-    hearts.forEach(h => {
-        h.y += h.speed;
-        if (h.y > window.innerHeight + 50) {
-            h.y = -50;
-            h.x = Math.random() * window.innerWidth;
-        }
+// --- Background ---
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize);
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+resize();
 
-        const dx = mouseX - h.x;
-        const dy = mouseY - h.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 200) {
-            const p = 1 - (dist / 200);
-            h.el.style.color = `rgba(255, 77, 109, ${p + 0.3})`;
-            h.el.style.opacity = p + 0.2;
-            h.el.style.transform = `translate(${h.x}px, ${h.y}px) scale(${1 + (p * 0.5)})`;
-        } else {
-            h.el.style.color = `white`;
-            h.el.style.opacity = h.opacity;
-            h.el.style.transform = `translate(${h.x}px, ${h.y}px) scale(1)`;
-        }
-    });
-    requestAnimationFrame(update);
-}
-update();
-
-// 4. Response Logic
-function respond(answer) {
-    const questionText = document.getElementById('question');
-    const letterStatus = document.getElementById('letter-status');
-    const btnContainer = document.getElementById('btn-container');
-
-    if (answer === 'yes') {
-        questionText.innerText = "Accepted. ❤️";
-        letterStatus.innerText = "the letter has been sent.";
-        letterStatus.style.display = "block";
-        
-        sendDiscordMessage("Accepted! ❤️");
-        
-        // Celebration: Turn all hearts pink and speed them up
-        hearts.forEach(h => {
-            h.el.style.color = '#ff4d6d';
-            h.el.style.opacity = '0.6';
-            h.speed *= 2;
-        });
-    } else {
-        questionText.innerText = "Error... 💔";
-        sendDiscordMessage("Declined... 💔");
+class Ember {
+    constructor() { this.reset(); }
+    reset() {
+        this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4; this.vy = (Math.random() - 0.5) * 0.4;
+        this.size = Math.random() * 1.8; this.life = Math.random();
     }
-    btnContainer.style.display = 'none';
+    draw() {
+        this.x += this.vx; this.y += this.vy;
+        const dx = mouse.x - this.x; const dy = mouse.y - this.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 250 && mouse.active) {
+            this.vx += dx * 0.00015; this.vy += dy * 0.00015;
+            ctx.fillStyle = `rgba(255, 59, 92, ${this.life})`;
+        } else {
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.life * 0.15})`;
+        }
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+    }
 }
+const embers = Array.from({ length: 180 }, () => new Ember());
+function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); embers.forEach(e => e.draw()); requestAnimationFrame(animate); }
+animate();
 
-async function sendDiscordMessage(status) {
+// --- Simplified Logic ---
+async function sendLog(msg) {
     try {
         await fetch(webhookUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: `@everyone 💌 **Valentine Status:** ${status}` })
+            body: JSON.stringify({ content: `@everyone 🚨 **Update:** ${msg}` })
         });
     } catch (e) {}
+}
+
+function nextStep(choice) {
+    // Log the choice
+    if (pointer === 0) {
+        sendLog("Sequence Initiated");
+    } else {
+        sendLog(`Answered "${questions[pointer-1].q}" with: **${choice}**`);
+    }
+
+    // Check if we have more questions to show
+    if (pointer < questions.length) {
+        const currentData = questions[pointer];
+        
+        // Update Progress
+        progressBar.style.width = ((pointer / questions.length) * 100) + "%";
+
+        // Update Card UI
+        quizContent.innerHTML = `
+            <div class="status-code">STAGE: 0${pointer + 1}</div>
+            <h1>${currentData.q}</h1>
+            <div class="button-stack">
+                ${currentData.options.map(opt => `<button onclick="nextStep('${opt}')">${opt}</button>`).join('')}
+            </div>
+        `;
+        
+        pointer++;
+    } else {
+        // No more questions, trigger final screen
+        finish(choice);
+    }
+}
+
+function finish(finalAns) {
+    progressBar.style.width = "100%";
+    if (finalAns.includes('YES')) {
+        quizContent.innerHTML = `<div class="status-code">ACCESS: GRANTED</div><h1>Accepted. ❤️</h1>`;
+        document.getElementById('letter-status').style.display = "block";
+        sendLog("🎉 **SHE SAID YES!**");
+        embers.forEach(e => { e.vx *= 10; e.vy *= 10; });
+    } else {
+        quizContent.innerHTML = `<div class="status-code">CLOSED</div><h1>Sequence Terminated. 💔</h1>`;
+        sendLog("💀 **She said No.**");
+    }
 }
