@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // NIGHT_OS</title>
+    <title>ADRAA // ROOT</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
@@ -12,11 +12,9 @@
 </head>
 <body>
 
-    <div id="notification-area"></div>
-
     <div id="entry-screen" onclick="bootSystem()">
-        <div class="entry-text">INITIALIZE</div>
-        <div class="click-prompt">[ CLICK ANYWHERE ]</div>
+        <div class="entry-text">INITIALIZE_SESSION</div>
+        <div class="click-prompt">[ CLICK TO START ]</div>
     </div>
 
     <div class="bg-wrapper">
@@ -30,14 +28,13 @@
     <div id="interface">
         
         <div class="stats">
-            <div class="stat-line">LOC: <span>VILNIUS</span></div>
-            <div class="stat-line">UPTIME: <span id="uptime">00:00:00</span></div>
-            <div class="stat-line">STATUS: <span style="color:#22c55e">ONLINE</span></div>
+            <div class="stat-line">LOC: VILNIUS <span style="color:var(--accent)">[-8°C]</span></div>
+            <div class="stat-line">UP: <span id="uptime">00:00:00</span></div>
         </div>
 
         <main class="hero">
-            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="gun">
-            <div class="title-wrapper"><h1 class="glitch-title">ADRAA</h1></div>
+            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="Adraa Gif">
+            <h1 class="glitch-title">ADRAA</h1>
             <div class="badges">
                 <span class="badge">ROOT</span>
                 <span class="badge">HVH</span>
@@ -47,14 +44,16 @@
 
         <div class="module player-widget">
             <div class="player-header">
-                <i class="fa-brands fa-soundcloud"></i> <span>SOUNDCLOUD</span>
+                <span>NOW PLAYING</span>
+                <i class="fa-brands fa-soundcloud"></i>
             </div>
             <div class="track-info" id="track-name">WAITING FOR INPUT...</div>
-            <div class="visualizer" id="visualizer"></div>
+            <div class="artist-info">SoundCloud Stream</div>
+            
             <div class="controls">
-                <i class="fa-solid fa-backward btn" onclick="prevSong()"></i>
-                <div class="play-btn btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
-                <i class="fa-solid fa-forward btn" onclick="nextSong()"></i>
+                <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
+                <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
+                <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
             </div>
         </div>
 
@@ -93,7 +92,7 @@
             </div>
         </div>
 
-        <iframe id="sc-widget" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%2338bdf8&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        <iframe id="sc-widget" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
 
     </div>
 
