@@ -1,12 +1,12 @@
 /* --- CONFIG --- */
 :root {
-    --bg: #050505;
-    --accent: #a855f7; /* Purple */
-    --accent-dim: rgba(168, 85, 247, 0.3);
-    --glass: rgba(20, 20, 20, 0.6);
-    --border: rgba(255, 255, 255, 0.08);
+    --bg: #000000;
+    --accent: #ffffff; /* PURE WHITE ACCENT */
+    --accent-dim: rgba(255, 255, 255, 0.2);
+    --glass: rgba(15, 15, 15, 0.6);
+    --border: rgba(255, 255, 255, 0.1);
     --text: #ffffff;
-    --text-dim: #9ca3af;
+    --text-dim: #888888;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; cursor: default; user-select: none; }
@@ -19,23 +19,15 @@ body {
     overflow: hidden;
 }
 
-/* --- CINEMATIC BACKGROUND --- */
-.bg-noise {
+/* --- INTERACTIVE BACKGROUND --- */
+#ash-canvas {
     position: fixed; inset: 0; z-index: -10;
-    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-    opacity: 0.07;
-    filter: contrast(150%) brightness(100%);
-    animation: noiseMove 0.5s infinite steps(10);
+    background: #050505;
+}
+.vignette {
+    position: fixed; inset: 0; z-index: -5;
+    background: radial-gradient(circle, transparent 40%, #000 100%);
     pointer-events: none;
-}
-.bg-spotlight {
-    position: fixed; inset: 0; z-index: -20;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-}
-
-@keyframes noiseMove {
-    0% { background-position: 0 0; }
-    100% { background-position: 10px 10px; }
 }
 
 /* --- ENTRY SCREEN --- */
@@ -59,41 +51,38 @@ body {
 /* Hero */
 .hero { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%); text-align: center; z-index: 5; }
 
-/* THE TEXT ANIMATION */
+/* MONOCHROME GRADIENT TEXT */
 .gradient-title {
     font-family: 'Syncopate', sans-serif; font-size: 7rem; font-weight: 700;
     letter-spacing: -4px; margin: 0;
-    /* The Gradient Magic */
-    background: linear-gradient(to right, #ffffff, #666666, #222222, #666666, #ffffff);
+    background: linear-gradient(to right, #444, #fff, #444);
     background-size: 200% auto;
     color: #000;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shine 4s linear infinite;
-    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: shine 5s linear infinite;
+    text-shadow: 0 0 30px rgba(255,255,255,0.1);
 }
 
 .tags { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
 .tag {
     font-family: 'JetBrains Mono'; font-size: 0.7rem; color: var(--text-dim);
     padding: 6px 14px; border: 1px solid var(--border); border-radius: 50px;
-    background: rgba(255,255,255,0.03); backdrop-filter: blur(5px);
+    background: rgba(255,255,255,0.03); backdrop-filter: blur(5px); transition: 0.3s;
 }
+.tag:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.1); }
 
-@keyframes shine {
-    to { background-position: 200% center; }
-}
+@keyframes shine { to { background-position: 200% center; } }
 
-/* --- CLASSIC PLAYER WIDGET (The one you liked) --- */
+/* --- PLAYER WIDGET --- */
 .player-widget {
     position: absolute; bottom: 40px; left: 40px; width: 300px;
     background: var(--glass); border: 1px solid var(--border);
     backdrop-filter: blur(20px); border-radius: 20px; padding: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    transition: 0.3s;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); transition: 0.3s;
 }
-.player-widget:hover { border-color: rgba(255,255,255,0.15); }
+.player-widget:hover { border-color: rgba(255,255,255,0.2); }
 
 .player-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); font-size: 0.75rem; margin-bottom: 15px; }
 .ph-left { display: flex; gap: 8px; align-items: center; }
@@ -103,8 +92,8 @@ body {
 .artist-name { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
 
 .visualizer { display: flex; gap: 4px; height: 25px; align-items: flex-end; margin-bottom: 15px; justify-content: center; }
-.bar { width: 4px; background: #fff; border-radius: 2px; height: 3px; transition: height 0.1s; opacity: 0.8; }
-.playing .bar { background: var(--accent); }
+.bar { width: 4px; background: #333; border-radius: 2px; height: 3px; transition: height 0.1s; }
+.playing .bar { background: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 
 .controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
 .btn { color: var(--text-dim); font-size: 1.1rem; cursor: pointer; transition: 0.2s; }
@@ -130,8 +119,8 @@ body {
     transition: 0.3s cubic-bezier(0.25, 1.5, 0.5, 1); position: relative;
 }
 .dock-item:hover { 
-    background: rgba(255,255,255,0.1); color: #fff; 
-    transform: translateY(-8px) scale(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: rgba(255,255,255,0.15); color: #fff; 
+    transform: translateY(-8px) scale(1.1); box-shadow: 0 5px 20px rgba(255,255,255,0.1);
 }
 
 .tooltip {
@@ -157,7 +146,7 @@ body {
 .term-bar { padding: 10px 15px; background: #111; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .traffic { display: flex; gap: 8px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; }
-.close { background: #ef4444; cursor: pointer; } .min { background: #eab308; } .max { background: #22c55e; }
+.close { background: #333; cursor: pointer; } .min { background: #333; } .max { background: #333; }
 .term-title { font-size: 0.8rem; color: #666; }
 
 .term-content { flex: 1; padding: 20px; color: #ccc; font-size: 0.9rem; overflow-y: auto; }
@@ -169,7 +158,7 @@ body {
 /* Notifications */
 #notification-area { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; }
 .toast {
-    background: #000; border: 1px solid var(--accent); color: #fff;
+    background: #000; border: 1px solid var(--border); color: #fff;
     padding: 8px 16px; font-family: 'JetBrains Mono'; font-size: 0.8rem; border-radius: 4px;
     margin-bottom: 10px; animation: slideDown 0.3s ease-out;
 }
