@@ -45,12 +45,14 @@ SYSTEM.widget.bind(SC.Widget.Events.PLAY, () => {
     SYSTEM.isPlaying = true;
     document.getElementById('play-icon').className = "fa-solid fa-pause";
     document.getElementById('track-name').style.color = "var(--accent)";
+    document.querySelector('.visualizer').classList.add('playing');
 });
 
 SYSTEM.widget.bind(SC.Widget.Events.PAUSE, () => {
     SYSTEM.isPlaying = false;
     document.getElementById('play-icon').className = "fa-solid fa-play";
     document.getElementById('track-name').style.color = "#fff";
+    document.querySelector('.visualizer').classList.remove('playing');
 });
 
 function togglePlay() { SYSTEM.widget.toggle(); }
@@ -102,7 +104,7 @@ document.getElementById('term-input').addEventListener('keydown', (e) => {
         const val = e.target.value.trim().toLowerCase();
         const out = document.getElementById('term-output');
         
-        out.innerHTML += `<div><span class="accent">➜</span> ${e.target.value}</div>`;
+        out.innerHTML += `<div><span class="prompt">➜</span> ${e.target.value}</div>`;
         
         if(val === 'help') out.innerHTML += `<div style="color:#777">CMDS: HELP, CLEAR, DATE, WHOAMI</div>`;
         else if(val === 'clear') out.innerHTML = '';
