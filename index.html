@@ -12,20 +12,14 @@
 </head>
 <body>
 
+    <canvas id="starfield"></canvas>
+
     <div id="entry-screen" onclick="bootSystem()">
         <div class="entry-text">INITIALIZE_SESSION</div>
         <div class="click-prompt">[ CLICK TO START ]</div>
     </div>
 
     <div id="notification-area"></div>
-
-    <div class="bg-wrapper">
-        <div class="grid-overlay"></div>
-        <video autoplay muted loop playsinline id="bg-video">
-            <source src="background.mp4" type="video/mp4">
-        </video>
-        <div class="bg-dim"></div>
-    </div>
 
     <div id="interface">
         
@@ -35,7 +29,6 @@
         </div>
 
         <main class="hero">
-            <img src="https://th.bing.com/th/id/R.56d7fef5fef87350783e1d5f1ac7e8c0?rik=KfVHibYJMKQBrg&riu=http%3a%2f%2fmedia.giphy.com%2fmedia%2f14m21YzhSiEDza%2fgiphy.gif&ehk=keaJryM93MGu6kAd53r7hMz4LowyQwmAPcqjERTZ%2f2U%3d&risl=&pid=ImgRaw&r=0" class="hero-gif" alt="gif">
             <h1 class="glitch-title">ADRAA</h1>
             <div class="badges">
                 <span class="badge">ROOT</span>
