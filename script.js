@@ -1,81 +1,191 @@
-// --- CONFIG ---
-const startTime = Date.now();
-const widget = SC.Widget(document.getElementById('sc-widget'));
-let isPlaying = false;
-let widgetReady = false;
+// --- CONFIGURATION ---
+const SYSTEM = {
+    startTime: Date.now(),
+    widget: SC.Widget(document.getElementById('sc-widget')),
+    isPlaying: false,
+    widgetReady: false
+};
 
-// --- BOOT SYSTEM ---
+// --- PARTICLE NETWORK BACKGROUND (THE "COOL" PART) ---
+const canvas = document.getElementById('network-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+const particleCount = 100; // Adjust for density
+const connectionDistance = 150;
+const mouseDistance = 200;
+
+let mouse = { x: null, y: null };
+
+window.addEventListener('mousemove', (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5; // Slow movement
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.size = Math.random() * 2 + 1;
+    }
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        // Bounce off edges
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+        // Mouse Interaction
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distance = Math.sqrt(dx*dx + dy*dy);
+        
+        if (distance < mouseDistance) {
+            const forceDirectionX = dx / distance;
+            const forceDirectionY = dy / distance;
+            const force = (mouseDistance - distance) / mouseDistance;
+            const directionX = forceDirectionX * force * 0.5;
+            const directionY = forceDirectionY * force * 0.5;
+            this.x -= directionX; // Move away from mouse
+            this.y -= directionY;
+        }
+    }
+    draw() {
+        ctx.fillStyle = '#a855f7'; // Purple dots
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function initParticles() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    particles = [];
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        
+        // Draw Connections
+        for (let j = i; j < particles.length; j++) {
+            let dx = particles[i].x - particles[j].x;
+            let dy = particles[i].y - particles[j].y;
+            let distance = Math.sqrt(dx*dx + dy*dy);
+            
+            if (distance < connectionDistance) {
+                ctx.beginPath();
+                // Fading line opacity based on distance
+                let opacity = 1 - (distance / connectionDistance);
+                ctx.strokeStyle = `rgba(168, 85, 247, ${opacity * 0.5})`; // Purple lines
+                ctx.lineWidth = 1;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+    requestAnimationFrame(animateParticles);
+}
+
+window.addEventListener('resize', initParticles);
+initParticles();
+animateParticles();
+
+
+// --- SYSTEM LOGIC ---
+
 function bootSystem() {
-    const screen = document.getElementById('entry-screen');
+    const entry = document.getElementById('entry-screen');
     const interface = document.getElementById('interface');
     
-    // Fade out entry
-    screen.style.opacity = '0';
-    setTimeout(() => { screen.style.display = 'none'; }, 800);
-
-    // Show interface
+    entry.style.opacity = '0';
+    setTimeout(() => entry.style.display = 'none', 600);
+    
     interface.classList.add('active');
     
-    // Play Music
-    if(widgetReady) {
-        widget.play();
-        widget.setVolume(50);
+    // Attempt Audio
+    if(SYSTEM.widgetReady) {
+        SYSTEM.widget.play();
+        SYSTEM.widget.setVolume(50);
     } else {
-        widget.bind(SC.Widget.Events.READY, () => {
-            widget.play();
-            widget.setVolume(50);
+        SYSTEM.widget.bind(SC.Widget.Events.READY, () => {
+            SYSTEM.widget.play();
+            SYSTEM.widget.setVolume(50);
         });
     }
 
-    // Trigger Animations
-    setTimeout(() => document.querySelector('.hero').classList.add('loaded'), 100);
-    setTimeout(() => document.querySelector('.player-widget').classList.add('show'), 800);
-    setTimeout(() => document.querySelector('.dock-container').classList.add('show'), 1000);
-    setTimeout(() => document.querySelector('.stats').classList.add('show'), 1200);
-
     setInterval(updateUptime, 1000);
+    updateVisualizer();
 }
 
-// --- MUSIC LOGIC ---
-widget.bind(SC.Widget.Events.READY, () => {
-    widgetReady = true;
-    widget.getCurrentSound(sound => {
+// --- AUDIO ---
+SYSTEM.widget.bind(SC.Widget.Events.READY, () => {
+    SYSTEM.widgetReady = true;
+    SYSTEM.widget.getCurrentSound(sound => {
         if(sound) document.getElementById('track-name').innerText = sound.title;
     });
 });
 
-widget.bind(SC.Widget.Events.PLAY, () => {
-    isPlaying = true;
+SYSTEM.widget.bind(SC.Widget.Events.PLAY, () => {
+    SYSTEM.isPlaying = true;
     document.getElementById('play-icon').className = "fa-solid fa-pause";
     document.getElementById('track-name').style.color = "var(--accent)";
-    widget.getCurrentSound(sound => {
-        if(sound) document.getElementById('track-name').innerText = sound.title;
-    });
+    document.querySelector('.visualizer-bars').classList.add('playing');
 });
 
-widget.bind(SC.Widget.Events.PAUSE, () => {
-    isPlaying = false;
+SYSTEM.widget.bind(SC.Widget.Events.PAUSE, () => {
+    SYSTEM.isPlaying = false;
     document.getElementById('play-icon').className = "fa-solid fa-play";
-    document.getElementById('track-name').style.color = "#94a3b8";
+    document.getElementById('track-name').style.color = "#fff";
+    document.querySelector('.visualizer-bars').classList.remove('playing');
 });
 
-function togglePlay() { if(widgetReady) widget.toggle(); }
-function nextSong() { if(widgetReady) widget.next(); }
-function prevSong() { if(widgetReady) widget.prev(); }
+function togglePlay() { SYSTEM.widget.toggle(); }
+function nextSong() { SYSTEM.widget.next(); }
+function prevSong() { SYSTEM.widget.prev(); }
 
-// --- ACTIONS ---
-function copyDiscord() {
-    navigator.clipboard.writeText('adra6');
-    showToast('fa-brands fa-discord', 'Copied: adra6');
+// Fake Visualizer
+function updateVisualizer() {
+    const bars = document.querySelectorAll('.bar');
+    bars.forEach(bar => {
+        if(SYSTEM.isPlaying) {
+            const h = Math.floor(Math.random() * 20) + 5;
+            bar.style.height = `${h}px`;
+        } else {
+            bar.style.height = '2px';
+        }
+    });
+    requestAnimationFrame(() => setTimeout(updateVisualizer, 100));
 }
 
-function showToast(icon, msg) {
+
+// --- UTILS ---
+function updateUptime() {
+    const diff = Math.floor((Date.now() - SYSTEM.startTime) / 1000);
+    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+    const s = String(diff % 60).padStart(2, '0');
+    document.getElementById('uptime').innerText = `${h}:${m}:${s}`;
+}
+
+function copyDiscord() {
+    navigator.clipboard.writeText('adra6');
     const area = document.getElementById('notification-area');
     const toast = document.createElement('div');
     toast.className = 'toast';
-    toast.innerHTML = `<i class="${icon}"></i> <span>${msg}</span>`;
+    toast.innerText = 'COPIED TO CLIPBOARD';
     area.appendChild(toast);
-    setTimeout(() => toast.remove(), 4000);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 // --- TERMINAL ---
@@ -87,111 +197,18 @@ function toggleTerminal() {
 
 document.getElementById('term-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-        const input = e.target.value.trim().toLowerCase();
-        const output = document.getElementById('term-output');
-        output.innerHTML += `<div><span style="color:var(--accent)">➜</span> ${e.target.value}</div>`;
+        const val = e.target.value.trim().toLowerCase();
+        const out = document.getElementById('term-output');
         
-        if(input === 'help') output.innerHTML += `<div style="color:#666">COMMANDS: help, clear, date, whoami</div>`;
-        else if(input === 'clear') output.innerHTML = '';
-        else if(input === 'date') output.innerHTML += `<div>${new Date().toLocaleString()}</div>`;
-        else if(input === 'whoami') output.innerHTML += `<div>root@adraa</div>`;
-        else if(input !== '') output.innerHTML += `<div style="color:#ef4444">Command not found</div>`;
+        out.innerHTML += `<div><span style="color:var(--accent)">➜</span> ${e.target.value}</div>`;
+        
+        if(val === 'help') out.innerHTML += `<div style="color:#777">COMMANDS: HELP, CLEAR, DATE, WHOAMI</div>`;
+        else if(val === 'clear') out.innerHTML = '';
+        else if(val === 'date') out.innerHTML += `<div>${new Date().toLocaleString()}</div>`;
+        else if(val === 'whoami') out.innerHTML += `<div>root@adraa</div>`;
+        else if(val !== '') out.innerHTML += `<div style="color:#ef4444">Unknown command.</div>`;
 
         e.target.value = '';
-        output.scrollTop = output.scrollHeight;
+        out.scrollTop = out.scrollHeight;
     }
 });
-
-function updateUptime() {
-    const diff = Math.floor((Date.now() - startTime) / 1000);
-    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-    const s = String(diff % 60).padStart(2, '0');
-    document.getElementById('uptime').innerText = `${h}:${m}:${s}`;
-}
-
-// --- INTERACTIVE STARFIELD ---
-const canvas = document.getElementById('starfield');
-const ctx = canvas.getContext('2d');
-
-let stars = [];
-let speed = 2; // Normal speed
-const numStars = 400; // Amount of stars
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
-
-// Resize handling
-function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    initStars();
-}
-window.addEventListener('resize', resize);
-
-// Mouse interaction (Steering)
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-});
-
-// Click interaction (Warp Speed)
-document.addEventListener('mousedown', () => speed = 20);
-document.addEventListener('mouseup', () => speed = 2);
-
-function initStars() {
-    stars = [];
-    for (let i = 0; i < numStars; i++) {
-        stars.push({
-            x: Math.random() * canvas.width - canvas.width / 2,
-            y: Math.random() * canvas.height - canvas.height / 2,
-            z: Math.random() * canvas.width // Depth
-        });
-    }
-}
-
-function drawStars() {
-    // Semi-transparent black fill to create "trails" effect
-    ctx.fillStyle = "rgba(0, 0, 0, 0.4)"; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Set Center (based on mouse)
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-    
-    // Parallax Factor
-    const dx = (mouseX - cx) * 0.1;
-    const dy = (mouseY - cy) * 0.1;
-
-    stars.forEach(star => {
-        // Move star closer
-        star.z -= speed;
-        
-        // Reset if passed screen
-        if (star.z <= 0) {
-            star.z = canvas.width;
-            star.x = Math.random() * canvas.width - canvas.width / 2;
-            star.y = Math.random() * canvas.height - canvas.height / 2;
-        }
-
-        // Project 3D to 2D
-        const x = (star.x / star.z) * canvas.width + cx - dx;
-        const y = (star.y / star.z) * canvas.height + cy - dy;
-        
-        // Calculate size based on depth (closer = bigger)
-        const size = (1 - star.z / canvas.width) * 3;
-        const opacity = (1 - star.z / canvas.width);
-
-        if (x > 0 && x < canvas.width && y > 0 && y < canvas.height) {
-            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-            ctx.beginPath();
-            ctx.arc(x, y, size, 0, Math.PI * 2);
-            ctx.fill();
-        }
-    });
-
-    requestAnimationFrame(drawStars);
-}
-
-// Start
-resize();
-drawStars();
