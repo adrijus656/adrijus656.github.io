@@ -1,15 +1,15 @@
 /* --- RESET & VARIABLES --- */
 :root {
     --bg: #030303;
-    --accent: #a855f7; /* Purple/Cyan Mix */
+    --accent: #a855f7; 
     --accent-glow: rgba(168, 85, 247, 0.4);
-    --glass: rgba(15, 15, 18, 0.7);
-    --border: rgba(255, 255, 255, 0.08);
+    --glass: rgba(15, 15, 18, 0.8);
+    --border: rgba(255, 255, 255, 0.1);
     --text: #ffffff;
     --text-dim: #94a3b8;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; cursor: default; user-select: none; }
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; user-select: none; }
 
 body {
     background-color: var(--bg);
@@ -19,9 +19,24 @@ body {
     overflow: hidden;
 }
 
+/* --- CUSTOM CURSOR --- */
+#cursor {
+    position: fixed; top: 0; left: 0;
+    width: 20px; height: 20px;
+    border: 1px solid var(--accent);
+    transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 10000;
+    transition: transform 0.1s ease-out;
+}
+#cursor::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    width: 4px; height: 4px; background: var(--accent);
+    transform: translate(-50%, -50%);
+}
+
 /* --- BACKGROUND --- */
 .bg-wrapper { position: fixed; inset: 0; z-index: -10; }
-#bg-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4) grayscale(0.2); opacity: 0; transition: 2s; }
+#bg-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.3) grayscale(0.2); opacity: 0; transition: 2s; }
 .bg-dim { position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, #030303 90%); }
 .grid-overlay { 
     position: fixed; inset: 0; 
@@ -29,32 +44,26 @@ body {
     background-size: 100% 40px; pointer-events: none; z-index: -5;
 }
 
-/* --- ENTRY SCREEN (REQUIRED FOR AUDIO) --- */
+/* --- ENTRY SCREEN --- */
 #entry-screen {
     position: fixed; inset: 0; background: #000; z-index: 9999;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     transition: opacity 0.8s ease; cursor: pointer;
 }
-.entry-text { 
-    font-family: 'Syncopate', sans-serif; letter-spacing: 5px; 
-    font-weight: 700; color: #fff; animation: pulse 2s infinite; 
-}
-.click-prompt { 
-    margin-top: 15px; font-family: 'JetBrains Mono', monospace; 
-    font-size: 0.75rem; color: var(--text-dim); opacity: 0.7; 
-}
+.entry-text { font-family: 'Syncopate', sans-serif; letter-spacing: 5px; font-weight: 700; color: #fff; animation: pulse 2s infinite; }
+.click-prompt { margin-top: 15px; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-dim); opacity: 0.7; }
 
-/* --- MAIN INTERFACE --- */
+/* --- INTERFACE --- */
 #interface { opacity: 0; transition: 1s ease; height: 100%; pointer-events: none; }
 #interface.active { opacity: 1; pointer-events: auto; }
 
-/* Hero Section */
+/* Hero */
 .hero {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
     text-align: center; display: flex; flex-direction: column; align-items: center;
 }
 .gun-gif {
-    width: 260px; margin-bottom: -20px; opacity: 0; 
+    width: 250px; margin-bottom: 0px; opacity: 0; 
     filter: drop-shadow(0 0 25px var(--accent-glow));
     transform: translateY(20px); transition: 1s ease 0.5s;
 }
@@ -74,67 +83,83 @@ body {
 }
 .badge:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
 
-/* Loaded States */
-.hero.loaded .gun-gif { opacity: 1; transform: translateY(0); }
-.hero.loaded .glitch-title { opacity: 1; transform: translateY(0); }
-.hero.loaded .badges { opacity: 1; transform: translateY(0); }
+.hero.loaded .gun-gif, .hero.loaded .glitch-title, .hero.loaded .badges { opacity: 1; transform: translateY(0); }
 
-/* Modules (Player/Dock) */
+/* Modules */
 .module {
     background: var(--glass); border: 1px solid var(--border);
-    backdrop-filter: blur(20px); border-radius: 24px;
+    backdrop-filter: blur(20px); border-radius: 20px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0; transform: translateY(50px);
 }
 
-/* Player Widget */
+/* Player */
 .player-widget {
-    position: absolute; bottom: 40px; left: 40px; width: 320px; padding: 25px;
+    position: absolute; bottom: 40px; left: 40px; width: 300px; padding: 25px;
     transition-delay: 1.4s;
 }
 .player-header { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; }
-.track-info { font-weight: 700; font-size: 1rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.artist-info { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 20px; }
+.track-info { font-weight: 700; font-size: 0.9rem; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.artist-info { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; }
 
 .controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
-.btn { color: var(--text-dim); cursor: pointer; transition: 0.2s; font-size: 1.2rem; }
+.btn { color: var(--text-dim); cursor: none; transition: 0.2s; font-size: 1.2rem; }
 .btn:hover { color: #fff; transform: scale(1.1); }
 .play-btn { 
-    width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+    width: 45px; height: 45px; background: #fff; color: #000; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
     box-shadow: 0 0 20px rgba(255,255,255,0.3); transition: 0.3s;
 }
 .play-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 
-/* Dock */
+/* Dock - FIXED CENTERING */
 .dock-container { 
     position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px); 
     opacity: 0; transition: 1s ease 1.6s; 
 }
-.dock { display: flex; gap: 15px; padding: 15px; background: var(--glass); border: 1px solid var(--border); border-radius: 30px; backdrop-filter: blur(20px); }
+/* When shown, we keep the X transform (-50%) and only change Y to 0 */
+.dock-container.show { transform: translateX(-50%) translateY(0) !important; opacity: 1 !important; }
+
+.dock { display: flex; gap: 12px; padding: 12px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; backdrop-filter: blur(20px); }
 .dock-item {
-    width: 55px; height: 55px; border-radius: 18px;
+    width: 50px; height: 50px; border-radius: 16px;
     background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem; color: var(--text-dim); cursor: pointer;
+    font-size: 1.3rem; color: var(--text-dim); cursor: none;
     transition: 0.3s cubic-bezier(0.25, 1.5, 0.5, 1); position: relative; border: 1px solid transparent;
 }
-.dock-item:hover { transform: translateY(-15px) scale(1.1); background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
+.dock-item:hover { transform: translateY(-10px) scale(1.1); background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
 
 .tooltip {
-    position: absolute; top: -45px; background: #000; padding: 6px 12px;
-    border-radius: 8px; font-size: 0.75rem; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; color: #fff; border: 1px solid #333;
+    position: absolute; top: -45px; background: #000; padding: 5px 10px;
+    border-radius: 6px; font-size: 0.7rem; opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap; color: #fff; border: 1px solid #333;
 }
 .dock-item:hover .tooltip { opacity: 1; top: -55px; }
 
-/* Terminal Overlay */
+/* Stats */
+.stats { position: absolute; top: 40px; right: 40px; text-align: right; opacity: 0; transform: translateY(-20px); transition: 1s ease 1.8s; }
+.stat-line { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px; }
+
+/* Notification */
+#notification-area {
+    position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 10px; z-index: 10000;
+}
+.toast {
+    background: rgba(10,10,10,0.95); border: 1px solid var(--accent);
+    padding: 10px 20px; border-radius: 50px; color: #fff; font-size: 0.8rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translateY(-20px);
+    animation: toastIn 0.5s forwards, toastOut 0.5s 4s forwards;
+    display: flex; gap: 10px; align-items: center;
+}
+
+/* Terminal */
 .terminal-wrapper {
     position: fixed; inset: 0; background: rgba(0,0,0,0.8);
     z-index: 5000; display: flex; justify-content: center; align-items: center;
     backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: 0.3s;
 }
 .terminal-wrapper.open { opacity: 1; pointer-events: auto; }
-
 .terminal-window {
     width: 700px; height: 480px; background: #0a0a0c;
     border: 1px solid var(--border); border-radius: 12px;
@@ -142,21 +167,15 @@ body {
     transform: scale(0.95); transition: 0.3s;
 }
 .terminal-wrapper.open .terminal-window { transform: scale(1); }
-
 .term-header { padding: 12px 16px; background: #131316; border-bottom: 1px solid #222; display: flex; gap: 8px; border-radius: 12px 12px 0 0; }
 .dot { width: 12px; height: 12px; border-radius: 50%; }
-.red { background: #ef4444; cursor: pointer; }
-.yel { background: #f59e0b; }
-.grn { background: #22c55e; }
-
+.red { background: #ef4444; cursor: none; } .yel { background: #f59e0b; } .grn { background: #22c55e; }
 .term-body { flex: 1; padding: 20px; font-family: 'JetBrains Mono'; font-size: 0.9rem; color: #a1a1aa; overflow-y: auto; }
 .term-input-line { display: flex; gap: 10px; color: #fff; padding: 0 20px 20px 20px; align-items: center; }
 #term-input { background: transparent; border: none; outline: none; color: #fff; flex: 1; font-family: 'JetBrains Mono'; font-size: 0.9rem; }
 
-/* Stats */
-.stats { position: absolute; top: 40px; right: 40px; text-align: right; opacity: 0; transform: translateY(-20px); transition: 1s ease 1.8s; }
-.stat-line { font-family: 'JetBrains Mono'; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px; }
-
 @keyframes pulse { 50% { opacity: 0.5; } }
+@keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(-20px); } }
 .show { opacity: 1 !important; transform: translateY(0) !important; }
 iframe { display: none; }
