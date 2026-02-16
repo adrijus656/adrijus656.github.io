@@ -1,17 +1,17 @@
 /* --- RESET & VARIABLES --- */
 :root {
     --bg: #030303;
-    --accent: #a855f7; 
+    --accent: #a855f7; /* Purple */
     --accent-glow: rgba(168, 85, 247, 0.4);
-    --glass: rgba(15, 15, 18, 0.8);
-    --border: rgba(255, 255, 255, 0.1);
+    --glass: rgba(8, 8, 10, 0.95); /* Deep Dark Glass */
+    --border: rgba(255, 255, 255, 0.08);
     --text: #ffffff;
     --text-dim: #94a3b8;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
 
-/* Native Crosshair Cursor (Much cleaner/faster) */
+/* Native Crosshair Cursor */
 body {
     background-color: var(--bg);
     color: var(--text);
@@ -21,18 +21,37 @@ body {
     cursor: crosshair; 
 }
 
-/* Links should show pointer */
+/* Links pointer */
 .dock-item, .play-btn, .btn, #entry-screen { cursor: pointer; }
 
-/* --- BACKGROUND --- */
-.bg-wrapper { position: fixed; inset: 0; z-index: -10; }
-#bg-video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.3) grayscale(0.2); opacity: 0; transition: 2s; }
-.bg-dim { position: absolute; inset: 0; background: radial-gradient(circle, transparent 20%, #030303 90%); }
-.grid-overlay { 
-    position: fixed; inset: 0; 
-    background: linear-gradient(transparent 98%, rgba(168, 85, 247, 0.05) 98%);
-    background-size: 100% 40px; pointer-events: none; z-index: -5;
+/* --- THE DIGITAL VOID BACKGROUND --- */
+.bg-wrapper { 
+    position: fixed; inset: 0; z-index: -10;
+    background-color: #030303;
+    
+    /* The Grid Pattern */
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(20, 20, 25, 1), transparent 90%), /* Central vignette */
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), /* Horizontal lines */
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); /* Vertical lines */
+    
+    background-size: 100% 100%, 50px 50px, 50px 50px;
+    animation: bgPulse 15s ease-in-out infinite alternate;
 }
+
+/* A subtle moving purple spotlight behind the text */
+.bg-dim {
+    position: absolute; top: 50%; left: 50%;
+    width: 60vw; height: 60vw;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.06), transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: spotlightMove 8s infinite ease-in-out alternate;
+    z-index: -5;
+    pointer-events: none;
+}
+
+/* Hide the old video if it's still in HTML */
+video { display: none !important; }
 
 /* --- ENTRY SCREEN --- */
 #entry-screen {
@@ -47,39 +66,36 @@ body {
 #interface { opacity: 0; transition: 1s ease; height: 100%; pointer-events: none; }
 #interface.active { opacity: 1; pointer-events: auto; }
 
-/* Hero */
+/* Hero (Centered, Clean) */
 .hero {
     position: absolute; top: 50%; left: 50%; transform: translate(-50%, -60%);
     text-align: center; display: flex; flex-direction: column; align-items: center;
 }
-.hero-gif {
-    width: 250px; margin-bottom: 10px; opacity: 0; border-radius: 8px;
-    filter: drop-shadow(0 0 25px var(--accent-glow));
-    transform: translateY(20px); transition: 1s ease 0.5s;
-}
 .glitch-title {
-    font-family: 'Syncopate', sans-serif; font-size: 5rem; font-weight: 700;
-    color: #fff; letter-spacing: -2px; text-shadow: 0 0 40px var(--accent-glow);
+    font-family: 'Syncopate', sans-serif; font-size: 6rem; font-weight: 700;
+    color: #fff; letter-spacing: -2px; 
+    text-shadow: 0 0 50px rgba(168, 85, 247, 0.3); /* Soft Glow */
     transform: translateY(100%); opacity: 0; transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.8s;
 }
 .badges { 
-    display: flex; gap: 10px; margin-top: 15px; opacity: 0; 
+    display: flex; gap: 10px; margin-top: 20px; opacity: 0; 
     transform: translateY(10px); transition: 1s ease 1.2s; 
 }
 .badge {
-    padding: 5px 15px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    padding: 6px 18px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; letter-spacing: 1px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
     color: var(--text-dim); backdrop-filter: blur(5px); transition: 0.3s;
 }
-.badge:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+.badge:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: rgba(168, 85, 247, 0.05); }
 
-.hero.loaded .hero-gif, .hero.loaded .glitch-title, .hero.loaded .badges { opacity: 1; transform: translateY(0); }
+/* Loaded States */
+.hero.loaded .glitch-title, .hero.loaded .badges { opacity: 1; transform: translateY(0); }
 
 /* Modules */
 .module {
     background: var(--glass); border: 1px solid var(--border);
-    backdrop-filter: blur(20px); border-radius: 20px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    backdrop-filter: blur(40px); border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     opacity: 0; transform: translateY(50px);
 }
@@ -99,9 +115,9 @@ body {
 .play-btn { 
     width: 45px; height: 45px; background: #fff; color: #000; border-radius: 50%;
     display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-    box-shadow: 0 0 20px rgba(255,255,255,0.3); transition: 0.3s;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2); transition: 0.3s;
 }
-.play-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.5); }
+.play-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,255,255,0.4); }
 
 /* Dock */
 .dock-container { 
@@ -110,14 +126,14 @@ body {
 }
 .dock-container.show { transform: translateX(-50%) translateY(0) !important; opacity: 1 !important; }
 
-.dock { display: flex; gap: 12px; padding: 12px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; backdrop-filter: blur(20px); }
+.dock { display: flex; gap: 12px; padding: 12px; background: var(--glass); border: 1px solid var(--border); border-radius: 24px; backdrop-filter: blur(40px); }
 .dock-item {
     width: 50px; height: 50px; border-radius: 16px;
     background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center;
     font-size: 1.3rem; color: var(--text-dim);
     transition: 0.3s cubic-bezier(0.25, 1.5, 0.5, 1); position: relative; border: 1px solid transparent;
 }
-.dock-item:hover { transform: translateY(-10px) scale(1.1); background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
+.dock-item:hover { transform: translateY(-10px) scale(1.1); background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.15); }
 
 .tooltip {
     position: absolute; top: -45px; background: #000; padding: 5px 10px;
@@ -163,8 +179,18 @@ body {
 .term-input-line { display: flex; gap: 10px; color: #fff; padding: 0 20px 20px 20px; align-items: center; }
 #term-input { background: transparent; border: none; outline: none; color: #fff; flex: 1; font-family: 'JetBrains Mono'; font-size: 0.9rem; cursor: text; }
 
+/* Animations */
 @keyframes pulse { 50% { opacity: 0.5; } }
 @keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-20px); } }
+@keyframes bgPulse {
+    0% { background-position: 50% 50%, 0 0, 0 0; }
+    100% { background-position: 50% 50%, 0 10px, 10px 0; }
+}
+@keyframes spotlightMove {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+}
+
 .show { opacity: 1 !important; transform: translateY(0) !important; }
 iframe { display: none; }
