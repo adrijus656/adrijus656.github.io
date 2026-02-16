@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // MONO</title>
-    
+    <title>ADRAA // ROOT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <div id="cursor"></div>
     <canvas id="ash-canvas"></canvas>
     <div class="vignette"></div>
 
@@ -22,13 +21,24 @@
         </div>
     </div>
 
-    <div id="notification-area"></div>
-
     <div id="interface">
         
-        <div class="top-bar">
+        <div class="top-left">
             <div class="stat">VILNIUS <span class="accent">[-8°C]</span></div>
-            <div class="stat">UP: <span id="uptime">00:00:00</span></div>
+            <div class="stat">TIME: <span id="clock">00:00:00</span></div>
+        </div>
+
+        <div class="top-right" onclick="copyDiscord()">
+            <div class="profile-card">
+                <div class="profile-text">
+                    <span id="discord-name">adra6</span>
+                    <span id="discord-activity">OFFLINE</span>
+                </div>
+                <div class="pfp-wrapper">
+                    <img id="discord-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="pfp">
+                    <div id="status-indicator" class="status-dot offline"></div>
+                </div>
+            </div>
         </div>
 
         <main class="hero">
@@ -40,7 +50,7 @@
             </div>
         </main>
 
-        <div class="player-widget">
+        <div class="player-widget tilt-card">
             <div class="player-header">
                 <div class="ph-left">
                     <i class="fa-solid fa-music"></i>
@@ -48,17 +58,14 @@
                 </div>
                 <i class="fa-brands fa-soundcloud"></i>
             </div>
-            
             <div class="track-info">
                 <div id="track-name">WAITING FOR INPUT...</div>
                 <div class="artist-name">SoundCloud Stream</div>
             </div>
-
             <div class="visualizer">
                 <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                 <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
             </div>
-
             <div class="controls">
                 <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
                 <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
@@ -68,10 +75,6 @@
 
         <div class="dock-container">
             <div class="dock">
-                <div class="dock-item" onclick="copyDiscord()">
-                    <i class="fa-brands fa-discord"></i>
-                    <div class="tooltip">Copy adra6</div>
-                </div>
                 <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
                     <i class="fa-brands fa-steam"></i>
                     <div class="tooltip">Steam</div>
@@ -88,7 +91,7 @@
         </div>
 
         <div class="terminal-wrapper" id="terminal">
-            <div class="terminal-window">
+            <div class="terminal-window tilt-card">
                 <div class="term-bar">
                     <div class="traffic">
                         <div class="dot close" onclick="toggleTerminal()"></div>
@@ -98,7 +101,7 @@
                     <div class="term-title">root@adraa:~</div>
                 </div>
                 <div class="term-content" id="term-output">
-                    <div class="sys-msg">AdraaOS v12.5 // MONOCHROME</div>
+                    <div class="sys-msg">AdraaOS v15.0 // PROFILE_LOADED</div>
                     <div class="sys-msg">Type <span class="cmd">help</span> to begin.</div>
                     <br>
                 </div>
