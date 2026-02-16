@@ -4,13 +4,6 @@ const widget = SC.Widget(document.getElementById('sc-widget'));
 let isPlaying = false;
 let widgetReady = false;
 
-// --- CURSOR ---
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-});
-
 // --- BOOT SYSTEM ---
 function bootSystem() {
     const screen = document.getElementById('entry-screen');
@@ -23,12 +16,11 @@ function bootSystem() {
     interface.classList.add('active');
     if(video) video.style.opacity = '1';
     
-    // Play Music (If widget is ready)
+    // Play Music
     if(widgetReady) {
         widget.play();
         widget.setVolume(50);
     } else {
-        // Retry once ready
         widget.bind(SC.Widget.Events.READY, () => {
             widget.play();
             widget.setVolume(50);
@@ -47,9 +39,7 @@ function bootSystem() {
 widget.bind(SC.Widget.Events.READY, () => {
     widgetReady = true;
     widget.getCurrentSound(sound => {
-        if(sound) {
-            document.getElementById('track-name').innerText = sound.title;
-        }
+        if(sound) document.getElementById('track-name').innerText = sound.title;
     });
 });
 
@@ -75,7 +65,7 @@ function prevSong() { if(widgetReady) widget.prev(); }
 // --- ACTIONS ---
 function copyDiscord() {
     navigator.clipboard.writeText('adra6');
-    showToast('fa-brands fa-discord', 'Username copied: adra6');
+    showToast('fa-brands fa-discord', 'Copied: adra6');
 }
 
 function showToast(icon, msg) {
