@@ -7,53 +7,84 @@ const SYSTEM = {
     userID: "906117797749346344"
 };
 
-// --- LANYARD (REAL-TIME STATUS) ---
-async function fetchDiscord() {
-    try {
-        const res = await fetch(`https://api.lanyard.rest/v1/users/${SYSTEM.userID}`);
-        const { data } = await res.json();
-        
-        if (data) {
-            // Update Avatar
-            document.getElementById('discord-pfp').src = `https://cdn.discordapp.com/avatars/${SYSTEM.userID}/${data.discord_user.avatar}.png`;
-            // Update Name
-            document.getElementById('discord-name').innerText = data.discord_user.username;
-            // Update Status Dot
-            const statusDot = document.getElementById('status-indicator');
-            statusDot.className = `status-dot ${data.discord_status}`;
-            // Update Activity Text
-            let statusText = data.discord_status.toUpperCase();
-            if(data.activities && data.activities.length > 0) {
-                // If playing a game or spotify, show that instead of "Online"
-                statusText = data.activities[0].name.toUpperCase();
-            }
-            document.getElementById('discord-activity').innerText = statusText;
-        }
-    } catch (e) {
-        console.log("Lanyard Error");
+// --- UTILS: TOAST NOTIFICATIONS ---
+function showToast(icon, msg) {
+    const area = document.getElementById('notification-area');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i class="${icon}"></i> <span>${msg}</span>`;
+    area.appendChild(toast);
+    
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        toast.style.animation = 'toastSlide 0.4s reverse forwards';
+        setTimeout(() => toast.remove(), 400);
+    }, 4000);
+}
+
+function openLink(url, name) {
+    window.open(url, '_blank');
+    showToast('fa-solid fa-arrow-up-right-from-square', `OPENING ${name.toUpperCase()}...`);
+}
+
+function copyDiscord() {
+    navigator.clipboard.writeText('adra6');
+    showToast('fa-brands fa-discord', 'COPIED: adra6');
+}
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        if (document.exitFullscreen) document.exitFullscreen();
     }
 }
-fetchDiscord();
-setInterval(fetchDiscord, 5000);
 
-// --- SYSTEM LOGIC ---
+// --- CONTEXT MENU ---
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    const menu = document.getElementById('context-menu');
+    menu.style.display = 'block';
+    menu.style.left = `${e.clientX}px`;
+    menu.style.top = `${e.clientY}px`;
+});
+document.addEventListener('click', () => {
+    document.getElementById('context-menu').style.display = 'none';
+});
+
+// --- CURSOR ---
 const cursor = document.getElementById('cursor');
 document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
 });
 
-let docTitle = document.title;
-window.addEventListener("blur", () => { document.title = "CONNECTION LOST..."; });
-window.addEventListener("focus", () => { document.title = docTitle; });
+// --- LANYARD STATUS ---
+async function fetchDiscord() {
+    try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${SYSTEM.userID}`);
+        const { data } = await res.json();
+        if (data) {
+            document.getElementById('discord-pfp').src = `https://cdn.discordapp.com/avatars/${SYSTEM.userID}/${data.discord_user.avatar}.png`;
+            document.getElementById('discord-name').innerText = data.discord_user.username;
+            document.getElementById('status-indicator').className = `status-dot ${data.discord_status}`;
+            
+            let statusText = data.discord_status.toUpperCase();
+            if(data.activities && data.activities.length > 0) {
+                statusText = data.activities[0].name.toUpperCase();
+            }
+            document.getElementById('discord-activity').innerText = statusText;
+        }
+    } catch (e) {}
+}
+fetchDiscord();
+setInterval(fetchDiscord, 5000);
 
+// --- BOOT ---
 function bootSystem() {
-    const entry = document.getElementById('entry-screen');
-    const interface = document.getElementById('interface');
-    
-    entry.style.opacity = '0';
-    setTimeout(() => { entry.style.display = 'none'; }, 800);
-    interface.classList.add('active');
+    document.getElementById('entry-screen').style.opacity = '0';
+    setTimeout(() => { document.getElementById('entry-screen').style.display = 'none'; }, 800);
+    document.getElementById('interface').classList.add('active');
     
     if(SYSTEM.widgetReady) {
         SYSTEM.widget.play();
@@ -64,8 +95,16 @@ function bootSystem() {
             SYSTEM.widget.setVolume(50);
         });
     }
-
-    setInterval(updateClock, 1000);
+    
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const diff = Math.floor((Date.now() - SYSTEM.startTime) / 1000);
+        const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+        const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+        const s = String(diff % 60).padStart(2, '0');
+        document.getElementById('uptime').innerText = `${h}:${m}:${s}`;
+    }, 1000);
+    
     updateVisualizer();
 }
 
@@ -81,6 +120,7 @@ SYSTEM.widget.bind(SC.Widget.Events.PLAY, () => {
     SYSTEM.isPlaying = true;
     document.getElementById('play-icon').className = "fa-solid fa-pause";
     document.querySelector('.visualizer').classList.add('playing');
+    showToast('fa-solid fa-music', 'NOW PLAYING');
 });
 
 SYSTEM.widget.bind(SC.Widget.Events.PAUSE, () => {
@@ -105,6 +145,28 @@ function updateVisualizer() {
     });
     requestAnimationFrame(() => setTimeout(updateVisualizer, 100));
 }
+
+// --- TERMINAL ---
+function toggleTerminal() {
+    const term = document.getElementById('terminal');
+    term.classList.toggle('open');
+    if(term.classList.contains('open')) setTimeout(() => document.getElementById('term-input').focus(), 100);
+}
+
+document.getElementById('term-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const val = e.target.value.trim().toLowerCase();
+        const out = document.getElementById('term-output');
+        out.innerHTML += `<div><span class="accent">➜</span> ${e.target.value}</div>`;
+        if(val === 'help') out.innerHTML += `<div style="color:#777">CMDS: HELP, CLEAR, DATE, WHOAMI</div>`;
+        else if(val === 'clear') out.innerHTML = '';
+        else if(val === 'date') out.innerHTML += `<div>${new Date().toLocaleString()}</div>`;
+        else if(val === 'whoami') out.innerHTML += `<div>root@adraa</div>`;
+        else if(val !== '') out.innerHTML += `<div style="color:#ef4444">ERR: CMD NOT FOUND</div>`;
+        e.target.value = '';
+        out.scrollTop = out.scrollHeight;
+    }
+});
 
 // --- BACKGROUND ---
 const canvas = document.getElementById('ash-canvas');
@@ -169,41 +231,3 @@ function animateParticles() {
 window.addEventListener('resize', initCanvas);
 initCanvas();
 animateParticles();
-
-// --- UTILS ---
-function updateClock() {
-    const now = new Date();
-    document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: false });
-}
-
-function copyDiscord() {
-    navigator.clipboard.writeText('adra6');
-    const area = document.getElementById('notification-area');
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.innerText = 'COPIED: adra6';
-    area.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// --- TERMINAL ---
-function toggleTerminal() {
-    const term = document.getElementById('terminal');
-    term.classList.toggle('open');
-    if(term.classList.contains('open')) setTimeout(() => document.getElementById('term-input').focus(), 100);
-}
-
-document.getElementById('term-input').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        const val = e.target.value.trim().toLowerCase();
-        const out = document.getElementById('term-output');
-        out.innerHTML += `<div><span class="accent">➜</span> ${e.target.value}</div>`;
-        if(val === 'help') out.innerHTML += `<div style="color:#777">CMDS: HELP, CLEAR, DATE, WHOAMI</div>`;
-        else if(val === 'clear') out.innerHTML = '';
-        else if(val === 'date') out.innerHTML += `<div>${new Date().toLocaleString()}</div>`;
-        else if(val === 'whoami') out.innerHTML += `<div>root@adraa</div>`;
-        else if(val !== '') out.innerHTML += `<div style="color:#ef4444">ERR: CMD NOT FOUND</div>`;
-        e.target.value = '';
-        out.scrollTop = out.scrollHeight;
-    }
-});
