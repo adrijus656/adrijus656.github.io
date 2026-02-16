@@ -12,10 +12,14 @@
 </head>
 <body>
 
+    <div id="cursor"></div>
+
     <div id="entry-screen" onclick="bootSystem()">
         <div class="entry-text">INITIALIZE_SESSION</div>
         <div class="click-prompt">[ CLICK TO START ]</div>
     </div>
+
+    <div id="notification-area"></div>
 
     <div class="bg-wrapper">
         <div class="grid-overlay"></div>
@@ -33,7 +37,7 @@
         </div>
 
         <main class="hero">
-            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="Adraa Gif">
+            <img src="https://media.giphy.com/media/4gTaqmVanbQBy/giphy.gif" class="gun-gif" alt="gif">
             <h1 class="glitch-title">ADRAA</h1>
             <div class="badges">
                 <span class="badge">ROOT</span>
@@ -47,8 +51,8 @@
                 <span>NOW PLAYING</span>
                 <i class="fa-brands fa-soundcloud"></i>
             </div>
-            <div class="track-info" id="track-name">WAITING FOR INPUT...</div>
-            <div class="artist-info">SoundCloud Stream</div>
+            <div class="track-info" id="track-name">LOADING STREAM...</div>
+            <div class="artist-info">SoundCloud</div>
             
             <div class="controls">
                 <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
@@ -59,13 +63,17 @@
 
         <div class="dock-container">
             <div class="dock">
-                <div class="dock-item" onclick="window.open('https://discord.com', '_blank')">
+                <div class="dock-item" onclick="copyDiscord()">
                     <i class="fa-brands fa-discord"></i>
-                    <span class="tooltip">Discord</span>
+                    <span class="tooltip">Copy adra6</span>
                 </div>
-                <div class="dock-item" onclick="window.open('https://steamcommunity.com', '_blank')">
+                <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
                     <i class="fa-brands fa-steam"></i>
                     <span class="tooltip">Steam</span>
+                </div>
+                 <div class="dock-item" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
+                    <i class="fa-brands fa-soundcloud"></i>
+                    <span class="tooltip">SoundCloud</span>
                 </div>
                 <div class="dock-item" onclick="toggleTerminal()">
                     <i class="fa-solid fa-terminal"></i>
@@ -82,7 +90,7 @@
                     <div class="dot grn"></div>
                 </div>
                 <div class="term-body" id="term-output">
-                    <div style="color:var(--accent)">Welcome to AdraaOS v9.0</div>
+                    <div style="color:var(--accent)">Welcome to AdraaOS v9.5</div>
                     <div>Type <span style="color:#fff">help</span> to begin.</div><br>
                 </div>
                 <div class="term-input-line">
@@ -92,7 +100,7 @@
             </div>
         </div>
 
-        <iframe id="sc-widget" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
 
     </div>
 
