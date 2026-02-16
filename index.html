@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>adraa // root_access</title>
+    <title>ADRAA // NETRUNNER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="cursor">+</div>
+    <div id="cursor"></div>
     
     <div class="crt-lines"></div>
     <div class="vignette"></div>
@@ -19,13 +19,10 @@
         </video>
         <div class="bg-dim"></div>
     </div>
-    <canvas id="starfield"></canvas>
 
     <div id="entry-screen" onclick="bootSystem()">
-        <div class="entry-content">
-            <p class="blink">INITIALIZE_SESSION</p>
-            <div class="loading-bar"><div class="bar-fill"></div></div>
-        </div>
+        <p class="blink">SYSTEM_OVERRIDE</p>
+        <div class="loading-bar"><div class="bar-fill"></div></div>
     </div>
 
     <div id="interface" class="hidden">
@@ -37,43 +34,41 @@
                     <div id="discord-status" class="status-indicator offline"></div>
                 </div>
                 <div class="user-info">
-                    <span class="username">adraa</span>
-                    <span id="activity-text" class="activity">SYSTEM READY</span>
+                    <span class="username">ADRAA</span>
+                    <span id="activity-text" class="activity">NET_IDLE</span>
                 </div>
             </div>
             
             <div class="sys-stats">
-                <div class="stat-item"><i class="fa-solid fa-snowflake"></i> <span id="weather">VILNIUS: -8°C</span></div>
-                <div class="stat-item"><i class="fa-solid fa-clock"></i> <span id="uptime">00:00:00</span></div>
+                <div class="stat-item">LOC: VILNIUS [-8°C]</div>
+                <div class="stat-item">UP: <span id="uptime">00:00:00</span></div>
             </div>
         </div>
 
         <main class="hero">
             <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="rifle">
-            <h1 class="glitch-title" data-text="adraa">adraa</h1>
+            <h1 class="glitch-title" data-text="ADRAA">ADRAA</h1>
             <div class="badges">
+                <span class="badge">ROOT_ACCESS</span>
+                <span class="badge">HVH_ELITE</span>
                 <span class="badge">DEV</span>
-                <span class="badge">HVH</span>
-                <span class="badge">ROOT</span>
             </div>
         </main>
 
         <div class="player-widget">
             <div class="player-header">
-                <i class="fa-brands fa-soundcloud accent-icon"></i>
+                <i class="fa-solid fa-signal"></i>
                 <div class="scrolling-text">
-                    <span id="track-name">WAITING FOR INPUT...</span>
+                    <span id="track-name">AUDIO_STREAM_OFFLINE</span>
                 </div>
             </div>
             <div class="visualizer" id="visualizer"></div>
             <div class="progress-area"><div id="progress-fill"></div></div>
             <div class="controls">
                 <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
-                <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
+                <div class="play-btn btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
                 <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
-                <div class="vol-wrapper">
-                    <input type="range" class="vol-slider" id="volume" min="0" max="100" value="50">
-                </div>
+                <input type="range" class="vol-slider" id="volume" min="0" max="100" value="50">
             </div>
         </div>
 
@@ -83,54 +78,29 @@
                 <div class="dock-item" onclick="window.open('https://discord.com/users/906117797749346344', '_blank')">
                     <i class="fa-brands fa-discord"></i>
                     <div class="dock-popup">
-                        <div class="popup-header">
-                            <img id="dock-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png">
-                            <div class="popup-meta">
-                                <span class="popup-title">adra6</span>
-                                <span id="dock-status-text" class="popup-subtitle">Loading...</span>
-                            </div>
-                        </div>
-                        <div class="popup-body" id="dock-activity">Fetching Lanyard...</div>
+                        <span class="popup-title">DISCORD</span>
+                        <div class="popup-body">ID: adra6<br>STATUS: ENCRYPTED</div>
                     </div>
                 </div>
 
                 <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
                     <i class="fa-brands fa-steam"></i>
                     <div class="dock-popup">
-                        <div class="popup-header">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/2048px-Steam_icon_logo.svg.png" class="popup-icon-img">
-                            <div class="popup-meta">
-                                <span class="popup-title">Steam</span>
-                                <span class="popup-subtitle">Level 10+</span>
-                            </div>
-                        </div>
-                        <div class="popup-body">
-                            Status: Online<br>
-                            Playing: CS2 / HvH
-                        </div>
+                        <span class="popup-title">STEAM</span>
+                        <div class="popup-body">LVL: 10+<br>MAIN: CS2</div>
                     </div>
                 </div>
 
                 <div class="dock-item" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
                     <i class="fa-brands fa-soundcloud"></i>
                     <div class="dock-popup">
-                        <div class="popup-header">
-                            <img src="https://i.pinimg.com/originals/47/3e/6b/473e6b2d2d9b646c24599187a17730d1.png" class="popup-icon-img">
-                            <div class="popup-meta">
-                                <span class="popup-title">SoundCloud</span>
-                                <span class="popup-subtitle">Artist</span>
-                            </div>
-                        </div>
-                        <div class="popup-body">
-                            User: adra adra<br>
-                            Latest: Phonk / Trap
-                        </div>
+                        <span class="popup-title">SOUNDCLOUD</span>
+                        <div class="popup-body">LATEST: PHONK</div>
                     </div>
                 </div>
 
                 <div class="dock-item terminal-btn" onclick="toggleTerminal()">
                     <i class="fa-solid fa-terminal"></i>
-                    <span class="tooltip">Terminal</span>
                 </div>
 
             </div>
@@ -139,22 +109,21 @@
         <div id="terminal" class="terminal-wrapper closed">
             <div class="terminal-window">
                 <div class="term-header">
-                    <span class="term-title">root@adraa:~</span>
-                    <div class="term-controls"><div class="term-dot close" onclick="toggleTerminal()"></div></div>
+                    <span>ROOT@ADRAA:~</span>
+                    <span style="cursor:pointer;" onclick="toggleTerminal()">[X]</span>
                 </div>
                 <div class="term-body" id="term-output">
-                    <div class="line" style="color:var(--accent)">Welcome to AdraaOS v6.5</div>
-                    <div class="line">Type <span class="cmd">help</span> for commands.</div><br>
+                    <div class="line" style="color:var(--accent)">ADRAA_OS v7.0 [SECURE_BOOT]</div>
+                    <div class="line">Type <span class="cmd">help</span> for command list.</div><br>
                 </div>
                 <div class="term-input-line">
-                    <span class="prompt">➜</span>
-                    <span class="path">~</span>
-                    <input type="text" id="term-input" autocomplete="off" spellcheck="false">
+                    <span class="prompt">root@adraa:~$</span>
+                    <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
                 </div>
             </div>
         </div>
 
-        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23ff0000&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
