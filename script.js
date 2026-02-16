@@ -3,22 +3,58 @@ const SYSTEM = {
     startTime: Date.now(),
     widget: SC.Widget(document.getElementById('sc-widget')),
     isPlaying: false,
-    widgetReady: false
+    widgetReady: false,
+    userID: "906117797749346344"
 };
 
-// --- BOOT ---
+// --- LANYARD (REAL-TIME STATUS) ---
+async function fetchDiscord() {
+    try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${SYSTEM.userID}`);
+        const { data } = await res.json();
+        
+        if (data) {
+            // Update Avatar
+            document.getElementById('discord-pfp').src = `https://cdn.discordapp.com/avatars/${SYSTEM.userID}/${data.discord_user.avatar}.png`;
+            // Update Name
+            document.getElementById('discord-name').innerText = data.discord_user.username;
+            // Update Status Dot
+            const statusDot = document.getElementById('status-indicator');
+            statusDot.className = `status-dot ${data.discord_status}`;
+            // Update Activity Text
+            let statusText = data.discord_status.toUpperCase();
+            if(data.activities && data.activities.length > 0) {
+                // If playing a game or spotify, show that instead of "Online"
+                statusText = data.activities[0].name.toUpperCase();
+            }
+            document.getElementById('discord-activity').innerText = statusText;
+        }
+    } catch (e) {
+        console.log("Lanyard Error");
+    }
+}
+fetchDiscord();
+setInterval(fetchDiscord, 5000);
+
+// --- SYSTEM LOGIC ---
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+});
+
+let docTitle = document.title;
+window.addEventListener("blur", () => { document.title = "CONNECTION LOST..."; });
+window.addEventListener("focus", () => { document.title = docTitle; });
+
 function bootSystem() {
     const entry = document.getElementById('entry-screen');
     const interface = document.getElementById('interface');
     
-    // Fade out entry
     entry.style.opacity = '0';
     setTimeout(() => { entry.style.display = 'none'; }, 800);
-    
-    // Fade in UI
     interface.classList.add('active');
     
-    // Play Music
     if(SYSTEM.widgetReady) {
         SYSTEM.widget.play();
         SYSTEM.widget.setVolume(50);
@@ -29,11 +65,11 @@ function bootSystem() {
         });
     }
 
-    setInterval(updateUptime, 1000);
+    setInterval(updateClock, 1000);
     updateVisualizer();
 }
 
-// --- AUDIO EVENTS ---
+// --- AUDIO ---
 SYSTEM.widget.bind(SC.Widget.Events.READY, () => {
     SYSTEM.widgetReady = true;
     SYSTEM.widget.getCurrentSound(sound => {
@@ -44,14 +80,12 @@ SYSTEM.widget.bind(SC.Widget.Events.READY, () => {
 SYSTEM.widget.bind(SC.Widget.Events.PLAY, () => {
     SYSTEM.isPlaying = true;
     document.getElementById('play-icon').className = "fa-solid fa-pause";
-    document.getElementById('track-name').style.color = "#fff";
     document.querySelector('.visualizer').classList.add('playing');
 });
 
 SYSTEM.widget.bind(SC.Widget.Events.PAUSE, () => {
     SYSTEM.isPlaying = false;
     document.getElementById('play-icon').className = "fa-solid fa-play";
-    document.getElementById('track-name').style.color = "#888";
     document.querySelector('.visualizer').classList.remove('playing');
 });
 
@@ -59,7 +93,6 @@ function togglePlay() { SYSTEM.widget.toggle(); }
 function nextSong() { SYSTEM.widget.next(); }
 function prevSong() { SYSTEM.widget.prev(); }
 
-// --- VISUALIZER SIMULATION ---
 function updateVisualizer() {
     const bars = document.querySelectorAll('.bar');
     bars.forEach(bar => {
@@ -73,13 +106,13 @@ function updateVisualizer() {
     requestAnimationFrame(() => setTimeout(updateVisualizer, 100));
 }
 
-// --- INTERACTIVE ASH BACKGROUND ---
+// --- BACKGROUND ---
 const canvas = document.getElementById('ash-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
 const particleCount = 150;
-
 let mouse = { x: null, y: null };
+
 window.addEventListener('mousemove', (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
@@ -97,24 +130,16 @@ class Particle {
     update() {
         this.x += this.vx;
         this.y += this.vy;
-
-        // Repel from mouse
         if (mouse.x != null) {
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
             let distance = Math.sqrt(dx*dx + dy*dy);
             if (distance < 100) {
-                const forceDirectionX = dx / distance;
-                const forceDirectionY = dy / distance;
                 const force = (100 - distance) / 100;
-                const directionX = forceDirectionX * force * 2;
-                const directionY = forceDirectionY * force * 2;
-                this.x -= directionX;
-                this.y -= directionY;
+                this.x -= (dx / distance) * force * 2;
+                this.y -= (dy / distance) * force * 2;
             }
         }
-
-        // Wrap around screen
         if(this.x < 0) this.x = canvas.width;
         if(this.x > canvas.width) this.x = 0;
         if(this.y < 0) this.y = canvas.height;
@@ -146,12 +171,9 @@ initCanvas();
 animateParticles();
 
 // --- UTILS ---
-function updateUptime() {
-    const diff = Math.floor((Date.now() - SYSTEM.startTime) / 1000);
-    const h = String(Math.floor(diff / 3600)).padStart(2, '0');
-    const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
-    const s = String(diff % 60).padStart(2, '0');
-    document.getElementById('uptime').innerText = `${h}:${m}:${s}`;
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').innerText = now.toLocaleTimeString('en-US', { hour12: false });
 }
 
 function copyDiscord() {
@@ -175,15 +197,12 @@ document.getElementById('term-input').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         const val = e.target.value.trim().toLowerCase();
         const out = document.getElementById('term-output');
-        
         out.innerHTML += `<div><span class="accent">➜</span> ${e.target.value}</div>`;
-        
         if(val === 'help') out.innerHTML += `<div style="color:#777">CMDS: HELP, CLEAR, DATE, WHOAMI</div>`;
         else if(val === 'clear') out.innerHTML = '';
         else if(val === 'date') out.innerHTML += `<div>${new Date().toLocaleString()}</div>`;
         else if(val === 'whoami') out.innerHTML += `<div>root@adraa</div>`;
-        else if(val !== '') out.innerHTML += `<div style="color:#777">Unknown command.</div>`;
-
+        else if(val !== '') out.innerHTML += `<div style="color:#ef4444">ERR: CMD NOT FOUND</div>`;
         e.target.value = '';
         out.scrollTop = out.scrollHeight;
     }
