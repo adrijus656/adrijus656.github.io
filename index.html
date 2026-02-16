@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // NIGHT</title>
+    <title>ADRAA // NIGHT_OS</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+
+    <div id="notification-area"></div>
+
+    <div id="entry-screen" onclick="bootSystem()">
+        <div class="entry-text">INITIALIZE</div>
+        <div class="click-prompt">[ CLICK ANYWHERE ]</div>
+    </div>
+
     <div class="bg-wrapper">
+        <div class="grid-overlay"></div>
         <video autoplay muted loop playsinline id="bg-video">
             <source src="background.mp4" type="video/mp4">
         </video>
@@ -19,16 +29,15 @@
 
     <div id="interface">
         
-        <div class="top-bar">
-            <div class="sys-stats">
-                <span>VILNIUS: -8°C</span>
-                <span id="uptime">00:00:00</span>
-            </div>
+        <div class="stats">
+            <div class="stat-line">LOC: <span>VILNIUS</span></div>
+            <div class="stat-line">UPTIME: <span id="uptime">00:00:00</span></div>
+            <div class="stat-line">STATUS: <span style="color:#22c55e">ONLINE</span></div>
         </div>
 
         <main class="hero">
-            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="rifle">
-            <h1 class="glitch-title" data-text="ADRAA">ADRAA</h1>
+            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="gun">
+            <div class="title-wrapper"><h1 class="glitch-title">ADRAA</h1></div>
             <div class="badges">
                 <span class="badge">ROOT</span>
                 <span class="badge">HVH</span>
@@ -36,20 +45,16 @@
             </div>
         </main>
 
-        <div class="player-widget">
+        <div class="module player-widget">
             <div class="player-header">
-                <div style="font-size:0.7rem; color:#888;">NOW PLAYING</div>
+                <i class="fa-brands fa-soundcloud"></i> <span>SOUNDCLOUD</span>
             </div>
-            <div style="overflow:hidden; margin-bottom:15px;">
-                <span id="track-name">WAITING FOR INPUT...</span>
-            </div>
-            
+            <div class="track-info" id="track-name">WAITING FOR INPUT...</div>
             <div class="visualizer" id="visualizer"></div>
-            
             <div class="controls">
-                <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
-                <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
-                <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
+                <i class="fa-solid fa-backward btn" onclick="prevSong()"></i>
+                <div class="play-btn btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
+                <i class="fa-solid fa-forward btn" onclick="nextSong()"></i>
             </div>
         </div>
 
@@ -63,10 +68,6 @@
                     <i class="fa-brands fa-steam"></i>
                     <span class="tooltip">Steam</span>
                 </div>
-                <div class="dock-item" onclick="window.open('https://soundcloud.com', '_blank')">
-                    <i class="fa-brands fa-soundcloud"></i>
-                    <span class="tooltip">Music</span>
-                </div>
                 <div class="dock-item" onclick="toggleTerminal()">
                     <i class="fa-solid fa-terminal"></i>
                     <span class="tooltip">Terminal</span>
@@ -74,27 +75,26 @@
             </div>
         </div>
 
-        <div id="terminal" class="terminal-wrapper closed">
+        <div class="terminal-wrapper" id="terminal">
             <div class="terminal-window">
                 <div class="term-header">
-                    <div class="term-dot close" onclick="toggleTerminal()"></div>
-                    <div class="term-dot min"></div>
-                    <div class="term-dot max"></div>
+                    <div class="dot red" onclick="toggleTerminal()"></div>
+                    <div class="dot yel"></div>
+                    <div class="dot grn"></div>
                 </div>
                 <div class="term-body" id="term-output">
-                    <div style="color:var(--accent); margin-bottom:10px;">Welcome to AdraaOS v8.0</div>
-                    <div>Type <span style="color:#fff; font-weight:bold;">help</span> to start.</div>
-                    <br>
+                    <div style="color:var(--accent)">Welcome to AdraaOS v9.0</div>
+                    <div>Type <span style="color:#fff">help</span> to begin.</div><br>
                 </div>
                 <div class="term-input-line">
-                    <span class="prompt">➜</span>
-                    <span style="color:#666">~</span>
-                    <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
+                    <span style="color:var(--accent)">➜</span> <span>~</span>
+                    <input type="text" id="term-input" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
-        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%2338bdf8&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+        <iframe id="sc-widget" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%2338bdf8&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
+
     </div>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
