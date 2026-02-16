@@ -8,13 +8,13 @@ let widgetReady = false;
 function bootSystem() {
     const screen = document.getElementById('entry-screen');
     const interface = document.getElementById('interface');
-    const video = document.getElementById('bg-video');
-
+    
+    // Fade out entry
     screen.style.opacity = '0';
     setTimeout(() => { screen.style.display = 'none'; }, 800);
 
+    // Show interface
     interface.classList.add('active');
-    if(video) video.style.opacity = '1';
     
     // Play Music
     if(widgetReady) {
@@ -27,6 +27,7 @@ function bootSystem() {
         });
     }
 
+    // Trigger Animations
     setTimeout(() => document.querySelector('.hero').classList.add('loaded'), 100);
     setTimeout(() => document.querySelector('.player-widget').classList.add('show'), 800);
     setTimeout(() => document.querySelector('.dock-container').classList.add('show'), 1000);
@@ -108,3 +109,89 @@ function updateUptime() {
     const s = String(diff % 60).padStart(2, '0');
     document.getElementById('uptime').innerText = `${h}:${m}:${s}`;
 }
+
+// --- INTERACTIVE STARFIELD ---
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+
+let stars = [];
+let speed = 2; // Normal speed
+const numStars = 400; // Amount of stars
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+// Resize handling
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initStars();
+}
+window.addEventListener('resize', resize);
+
+// Mouse interaction (Steering)
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// Click interaction (Warp Speed)
+document.addEventListener('mousedown', () => speed = 20);
+document.addEventListener('mouseup', () => speed = 2);
+
+function initStars() {
+    stars = [];
+    for (let i = 0; i < numStars; i++) {
+        stars.push({
+            x: Math.random() * canvas.width - canvas.width / 2,
+            y: Math.random() * canvas.height - canvas.height / 2,
+            z: Math.random() * canvas.width // Depth
+        });
+    }
+}
+
+function drawStars() {
+    // Semi-transparent black fill to create "trails" effect
+    ctx.fillStyle = "rgba(0, 0, 0, 0.4)"; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Set Center (based on mouse)
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    
+    // Parallax Factor
+    const dx = (mouseX - cx) * 0.1;
+    const dy = (mouseY - cy) * 0.1;
+
+    stars.forEach(star => {
+        // Move star closer
+        star.z -= speed;
+        
+        // Reset if passed screen
+        if (star.z <= 0) {
+            star.z = canvas.width;
+            star.x = Math.random() * canvas.width - canvas.width / 2;
+            star.y = Math.random() * canvas.height - canvas.height / 2;
+        }
+
+        // Project 3D to 2D
+        const x = (star.x / star.z) * canvas.width + cx - dx;
+        const y = (star.y / star.z) * canvas.height + cy - dy;
+        
+        // Calculate size based on depth (closer = bigger)
+        const size = (1 - star.z / canvas.width) * 3;
+        const opacity = (1 - star.z / canvas.width);
+
+        if (x > 0 && x < canvas.width && y > 0 && y < canvas.height) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
+
+    requestAnimationFrame(drawStars);
+}
+
+// Start
+resize();
+drawStars();
