@@ -3,97 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // ROOT</title>
+    <title>ADRAA // ROOT_ACCESS</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <canvas id="starfield"></canvas>
+    <canvas id="network-canvas"></canvas>
+    <div class="vignette"></div>
+    <div class="scanlines"></div>
 
     <div id="entry-screen" onclick="bootSystem()">
-        <div class="entry-text">INITIALIZE_SESSION</div>
-        <div class="click-prompt">[ CLICK TO START ]</div>
+        <div class="terminal-loader">
+            <div class="terminal-text">SYSTEM_BOOT_SEQUENCE</div>
+            <div class="terminal-sub">[ CLICK TO INITIALIZE ]</div>
+        </div>
     </div>
 
     <div id="notification-area"></div>
 
     <div id="interface">
         
-        <div class="stats">
-            <div class="stat-line">LOC: VILNIUS <span style="color:var(--accent)">[-8°C]</span></div>
-            <div class="stat-line">UP: <span id="uptime">00:00:00</span></div>
+        <div class="top-bar">
+            <div class="stat-item">
+                <i class="fa-solid fa-server"></i>
+                <span>VILNIUS: -8°C</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-clock"></i>
+                <span id="uptime">00:00:00</span>
+            </div>
         </div>
 
         <main class="hero">
-            <h1 class="glitch-title">ADRAA</h1>
-            <div class="badges">
-                <span class="badge">ROOT</span>
-                <span class="badge">HVH</span>
-                <span class="badge">DEV</span>
+            <div class="glitch-wrapper">
+                <h1 class="hero-title" data-text="ADRAA">ADRAA</h1>
+            </div>
+            <div class="tagline">
+                <span class="bracket">[</span> ROOT <span class="bracket">]</span>
+                <span class="bracket">[</span> HVH <span class="bracket">]</span>
+                <span class="bracket">[</span> DEV <span class="bracket">]</span>
             </div>
         </main>
 
-        <div class="module player-widget">
-            <div class="player-header">
-                <span>NOW PLAYING</span>
-                <i class="fa-brands fa-soundcloud"></i>
-            </div>
-            <div class="track-info" id="track-name">LOADING STREAM...</div>
-            <div class="artist-info">SoundCloud</div>
-            
-            <div class="controls">
-                <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
-                <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
-                <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
-            </div>
-        </div>
-
-        <div class="dock-container">
-            <div class="dock">
-                <div class="dock-item" onclick="copyDiscord()">
-                    <i class="fa-brands fa-discord"></i>
-                    <span class="tooltip">Copy adra6</span>
-                </div>
-                <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
-                    <i class="fa-brands fa-steam"></i>
-                    <span class="tooltip">Steam</span>
-                </div>
-                 <div class="dock-item" onclick="window.open('https://soundcloud.com/adra-adra-853007141?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing', '_blank')">
+        <div class="widget-container left">
+            <div class="glass-panel player">
+                <div class="panel-header">
                     <i class="fa-brands fa-soundcloud"></i>
-                    <span class="tooltip">SoundCloud</span>
+                    <span>AUDIO STREAM</span>
                 </div>
-                <div class="dock-item" onclick="toggleTerminal()">
-                    <i class="fa-solid fa-terminal"></i>
-                    <span class="tooltip">Terminal</span>
+                <div class="track-scroller">
+                    <span id="track-name">WAITING FOR INPUT...</span>
+                </div>
+                <div class="visualizer-bars">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                </div>
+                <div class="controls">
+                    <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
+                    <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
+                    <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
                 </div>
             </div>
         </div>
 
-        <div class="terminal-wrapper" id="terminal">
-            <div class="terminal-window">
-                <div class="term-header">
-                    <div class="dot red" onclick="toggleTerminal()"></div>
-                    <div class="dot yel"></div>
-                    <div class="dot grn"></div>
+        <div class="dock-wrapper">
+            <div class="glass-dock">
+                <div class="dock-icon" onclick="copyDiscord()">
+                    <i class="fa-brands fa-discord"></i>
+                    <div class="tooltip">Copy adra6</div>
                 </div>
-                <div class="term-body" id="term-output">
-                    <div style="color:var(--accent)">Welcome to AdraaOS v9.5</div>
-                    <div>Type <span style="color:#fff">help</span> to begin.</div><br>
+                <div class="dock-icon" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
+                    <i class="fa-brands fa-steam"></i>
+                    <div class="tooltip">Steam</div>
                 </div>
-                <div class="term-input-line">
-                    <span style="color:var(--accent)">➜</span> <span>~</span>
+                <div class="dock-icon" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
+                    <i class="fa-brands fa-soundcloud"></i>
+                    <div class="tooltip">SoundCloud</div>
+                </div>
+                <div class="dock-icon" onclick="toggleTerminal()">
+                    <i class="fa-solid fa-terminal"></i>
+                    <div class="tooltip">Terminal</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="terminal-overlay" id="terminal">
+            <div class="terminal-box">
+                <div class="terminal-header">
+                    <div class="traffic-lights">
+                        <div class="light red" onclick="toggleTerminal()"></div>
+                        <div class="light yellow"></div>
+                        <div class="light green"></div>
+                    </div>
+                    <div class="terminal-title">root@adraa:~</div>
+                </div>
+                <div class="terminal-body" id="term-output">
+                    <div class="sys-msg">AdraaOS v10.0 Kernel Loaded.</div>
+                    <div class="sys-msg">Type <span class="highlight">help</span> to list commands.</div>
+                    <br>
+                </div>
+                <div class="input-line">
+                    <span class="prompt">➜</span>
+                    <span class="path">~</span>
                     <input type="text" id="term-input" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
-        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
-
     </div>
+
+    <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23a855f7&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
 
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="script.js"></script>
