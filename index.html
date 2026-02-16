@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // ROOT_ACCESS</title>
+    <title>ADRAA // ROOT</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <canvas id="network-canvas"></canvas>
+    <div class="aura-container">
+        <div class="aura aura-1"></div>
+        <div class="aura aura-2"></div>
+        <div class="aura aura-3"></div>
+    </div>
+    <div class="noise-overlay"></div>
     <div class="vignette"></div>
-    <div class="scanlines"></div>
 
     <div id="entry-screen" onclick="bootSystem()">
-        <div class="terminal-loader">
-            <div class="terminal-text">SYSTEM_BOOT_SEQUENCE</div>
-            <div class="terminal-sub">[ CLICK TO INITIALIZE ]</div>
+        <div class="entry-content">
+            <div class="entry-title">SYSTEM_WAKE</div>
+            <div class="entry-sub">[ ESTABLISH CONNECTION ]</div>
         </div>
     </div>
 
@@ -28,37 +32,29 @@
     <div id="interface">
         
         <div class="top-bar">
-            <div class="stat-item">
-                <i class="fa-solid fa-server"></i>
-                <span>VILNIUS: -8°C</span>
-            </div>
-            <div class="stat-item">
-                <i class="fa-solid fa-clock"></i>
-                <span id="uptime">00:00:00</span>
-            </div>
+            <div class="stat">VILNIUS <span class="accent">[-8°C]</span></div>
+            <div class="stat">UP: <span id="uptime">00:00:00</span></div>
         </div>
 
         <main class="hero">
-            <div class="glitch-wrapper">
-                <h1 class="hero-title" data-text="ADRAA">ADRAA</h1>
-            </div>
-            <div class="tagline">
-                <span class="bracket">[</span> ROOT <span class="bracket">]</span>
-                <span class="bracket">[</span> HVH <span class="bracket">]</span>
-                <span class="bracket">[</span> DEV <span class="bracket">]</span>
+            <h1 class="glitch-title" data-text="ADRAA">ADRAA</h1>
+            <div class="tags">
+                <span class="tag">ROOT</span>
+                <span class="tag">HVH</span>
+                <span class="tag">DEV</span>
             </div>
         </main>
 
-        <div class="widget-container left">
+        <div class="widget-area">
             <div class="glass-panel player">
-                <div class="panel-header">
+                <div class="panel-top">
                     <i class="fa-brands fa-soundcloud"></i>
-                    <span>AUDIO STREAM</span>
+                    <span>AUDIO_STREAM</span>
                 </div>
                 <div class="track-scroller">
                     <span id="track-name">WAITING FOR INPUT...</span>
                 </div>
-                <div class="visualizer-bars">
+                <div class="visualizer">
                     <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                     <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
                 </div>
@@ -70,43 +66,43 @@
             </div>
         </div>
 
-        <div class="dock-wrapper">
-            <div class="glass-dock">
-                <div class="dock-icon" onclick="copyDiscord()">
+        <div class="dock-container">
+            <div class="dock">
+                <div class="dock-item" onclick="copyDiscord()">
                     <i class="fa-brands fa-discord"></i>
                     <div class="tooltip">Copy adra6</div>
                 </div>
-                <div class="dock-icon" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
+                <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
                     <i class="fa-brands fa-steam"></i>
                     <div class="tooltip">Steam</div>
                 </div>
-                <div class="dock-icon" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
+                <div class="dock-item" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
                     <i class="fa-brands fa-soundcloud"></i>
                     <div class="tooltip">SoundCloud</div>
                 </div>
-                <div class="dock-icon" onclick="toggleTerminal()">
+                <div class="dock-item" onclick="toggleTerminal()">
                     <i class="fa-solid fa-terminal"></i>
                     <div class="tooltip">Terminal</div>
                 </div>
             </div>
         </div>
 
-        <div class="terminal-overlay" id="terminal">
-            <div class="terminal-box">
-                <div class="terminal-header">
-                    <div class="traffic-lights">
-                        <div class="light red" onclick="toggleTerminal()"></div>
-                        <div class="light yellow"></div>
-                        <div class="light green"></div>
+        <div class="terminal-wrapper" id="terminal">
+            <div class="terminal-window">
+                <div class="term-bar">
+                    <div class="traffic">
+                        <div class="dot close" onclick="toggleTerminal()"></div>
+                        <div class="dot min"></div>
+                        <div class="dot max"></div>
                     </div>
-                    <div class="terminal-title">root@adraa:~</div>
+                    <div class="term-title">root@adraa:~</div>
                 </div>
-                <div class="terminal-body" id="term-output">
-                    <div class="sys-msg">AdraaOS v10.0 Kernel Loaded.</div>
-                    <div class="sys-msg">Type <span class="highlight">help</span> to list commands.</div>
+                <div class="term-content" id="term-output">
+                    <div class="sys-msg">AdraaOS v11.0 // NIGHT_BUILD</div>
+                    <div class="sys-msg">Type <span class="cmd">help</span> to begin.</div>
                     <br>
                 </div>
-                <div class="input-line">
+                <div class="input-area">
                     <span class="prompt">➜</span>
                     <span class="path">~</span>
                     <input type="text" id="term-input" autocomplete="off" spellcheck="false">
