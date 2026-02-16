@@ -1,132 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAA // NETRUNNER</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="cursor"></div>
-    
-    <div class="crt-lines"></div>
-    <div class="vignette"></div>
-    <div class="bg-wrapper">
-        <video autoplay muted loop playsinline id="bg-video">
-            <source src="background.mp4" type="video/mp4">
-        </video>
-        <div class="bg-dim"></div>
+<div id="terminal" class="terminal-wrapper closed">
+    <div class="terminal-window">
+        <div class="term-header">
+            <div class="term-controls">
+                <div class="term-dot close" onclick="toggleTerminal()"></div>
+                <div class="term-dot min"></div>
+                <div class="term-dot max"></div>
+            </div>
+            <span class="term-title">root@adraa — zsh</span>
+            <div style="width: 40px;"></div> </div>
+        <div class="term-body" id="term-output">
+            <div class="line">Last login: <span id="last-login">Mon Feb 12</span> on ttys001</div>
+            <div class="line" style="color:var(--accent)">Welcome to AdraaOS v8.0</div>
+            <br>
+            <div class="line">Type <span class="cmd" style="color:#fff">help</span> to view available commands.</div>
+            <br>
+        </div>
+        <div class="term-input-line">
+            <span class="prompt">➜</span>
+            <span class="path">~</span>
+            <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
+        </div>
     </div>
-
-    <div id="entry-screen" onclick="bootSystem()">
-        <p class="blink">SYSTEM_OVERRIDE</p>
-        <div class="loading-bar"><div class="bar-fill"></div></div>
-    </div>
-
-    <div id="interface" class="hidden">
-        
-        <div class="top-bar">
-            <div class="user-card">
-                <div class="pfp-wrapper">
-                    <img id="discord-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="pfp">
-                    <div id="discord-status" class="status-indicator offline"></div>
-                </div>
-                <div class="user-info">
-                    <span class="username">ADRAA</span>
-                    <span id="activity-text" class="activity">NET_IDLE</span>
-                </div>
-            </div>
-            
-            <div class="sys-stats">
-                <div class="stat-item">LOC: VILNIUS [-8°C]</div>
-                <div class="stat-item">UP: <span id="uptime">00:00:00</span></div>
-            </div>
-        </div>
-
-        <main class="hero">
-            <img src="https://64.media.tumblr.com/138a2a9a96abf47d592958eab0d2e266/tumblr_n0hn059Owh1s5jjtzo1_500.gif" class="gun-gif" alt="rifle">
-            <h1 class="glitch-title" data-text="ADRAA">ADRAA</h1>
-            <div class="badges">
-                <span class="badge">ROOT_ACCESS</span>
-                <span class="badge">HVH_ELITE</span>
-                <span class="badge">DEV</span>
-            </div>
-        </main>
-
-        <div class="player-widget">
-            <div class="player-header">
-                <i class="fa-solid fa-signal"></i>
-                <div class="scrolling-text">
-                    <span id="track-name">AUDIO_STREAM_OFFLINE</span>
-                </div>
-            </div>
-            <div class="visualizer" id="visualizer"></div>
-            <div class="progress-area"><div id="progress-fill"></div></div>
-            <div class="controls">
-                <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
-                <div class="play-btn btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
-                <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
-                <input type="range" class="vol-slider" id="volume" min="0" max="100" value="50">
-            </div>
-        </div>
-
-        <div class="dock-container">
-            <div class="dock">
-                
-                <div class="dock-item" onclick="window.open('https://discord.com/users/906117797749346344', '_blank')">
-                    <i class="fa-brands fa-discord"></i>
-                    <div class="dock-popup">
-                        <span class="popup-title">DISCORD</span>
-                        <div class="popup-body">ID: adra6<br>STATUS: ENCRYPTED</div>
-                    </div>
-                </div>
-
-                <div class="dock-item" onclick="window.open('https://steamcommunity.com/profiles/76561199593591499/', '_blank')">
-                    <i class="fa-brands fa-steam"></i>
-                    <div class="dock-popup">
-                        <span class="popup-title">STEAM</span>
-                        <div class="popup-body">LVL: 10+<br>MAIN: CS2</div>
-                    </div>
-                </div>
-
-                <div class="dock-item" onclick="window.open('https://soundcloud.com/adra-adra-853007141', '_blank')">
-                    <i class="fa-brands fa-soundcloud"></i>
-                    <div class="dock-popup">
-                        <span class="popup-title">SOUNDCLOUD</span>
-                        <div class="popup-body">LATEST: PHONK</div>
-                    </div>
-                </div>
-
-                <div class="dock-item terminal-btn" onclick="toggleTerminal()">
-                    <i class="fa-solid fa-terminal"></i>
-                </div>
-
-            </div>
-        </div>
-
-        <div id="terminal" class="terminal-wrapper closed">
-            <div class="terminal-window">
-                <div class="term-header">
-                    <span>ROOT@ADRAA:~</span>
-                    <span style="cursor:pointer;" onclick="toggleTerminal()">[X]</span>
-                </div>
-                <div class="term-body" id="term-output">
-                    <div class="line" style="color:var(--accent)">ADRAA_OS v7.0 [SECURE_BOOT]</div>
-                    <div class="line">Type <span class="cmd">help</span> for command list.</div><br>
-                </div>
-                <div class="term-input-line">
-                    <span class="prompt">root@adraa:~$</span>
-                    <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
-                </div>
-            </div>
-        </div>
-
-        <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23ff0000&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&visual=false"></iframe>
-    </div>
-
-    <script src="https://w.soundcloud.com/player/api.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+</div>
