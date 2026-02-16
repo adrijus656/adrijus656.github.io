@@ -12,18 +12,13 @@
 </head>
 <body>
 
-    <div class="aura-container">
-        <div class="aura aura-1"></div>
-        <div class="aura aura-2"></div>
-        <div class="aura aura-3"></div>
-    </div>
-    <div class="noise-overlay"></div>
-    <div class="vignette"></div>
+    <div class="bg-noise"></div>
+    <div class="bg-spotlight"></div>
 
     <div id="entry-screen" onclick="bootSystem()">
         <div class="entry-content">
-            <div class="entry-title">SYSTEM_WAKE</div>
-            <div class="entry-sub">[ ESTABLISH CONNECTION ]</div>
+            <div class="entry-title">INITIALIZE</div>
+            <div class="entry-sub">[ CLICK TO START ]</div>
         </div>
     </div>
 
@@ -37,7 +32,7 @@
         </div>
 
         <main class="hero">
-            <h1 class="glitch-title" data-text="ADRAA">ADRAA</h1>
+            <h1 class="gradient-title">ADRAA</h1>
             <div class="tags">
                 <span class="tag">ROOT</span>
                 <span class="tag">HVH</span>
@@ -45,24 +40,29 @@
             </div>
         </main>
 
-        <div class="widget-area">
-            <div class="glass-panel player">
-                <div class="panel-top">
-                    <i class="fa-brands fa-soundcloud"></i>
-                    <span>AUDIO_STREAM</span>
+        <div class="player-widget">
+            <div class="player-header">
+                <div class="ph-left">
+                    <i class="fa-solid fa-music"></i>
+                    <span>NOW PLAYING</span>
                 </div>
-                <div class="track-scroller">
-                    <span id="track-name">WAITING FOR INPUT...</span>
-                </div>
-                <div class="visualizer">
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                </div>
-                <div class="controls">
-                    <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
-                    <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
-                    <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
-                </div>
+                <i class="fa-brands fa-soundcloud"></i>
+            </div>
+            
+            <div class="track-info">
+                <div id="track-name">WAITING FOR INPUT...</div>
+                <div class="artist-name">SoundCloud Stream</div>
+            </div>
+
+            <div class="visualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+
+            <div class="controls">
+                <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
+                <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
+                <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
                     <div class="term-title">root@adraa:~</div>
                 </div>
                 <div class="term-content" id="term-output">
-                    <div class="sys-msg">AdraaOS v11.0 // NIGHT_BUILD</div>
+                    <div class="sys-msg">AdraaOS v12.0 // STABLE</div>
                     <div class="sys-msg">Type <span class="cmd">help</span> to begin.</div>
                     <br>
                 </div>
