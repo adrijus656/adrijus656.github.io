@@ -4,55 +4,171 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADRAA // ROOT</title>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- CURSOR -->
     <div id="cursor"></div>
+    <div id="cursor-ring"></div>
 
-    <canvas id="ash-canvas"></canvas>
+    <!-- BACKGROUND -->
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="background.mp4" type="video/mp4">
+    </video>
     <div class="vignette"></div>
 
+    <!-- ENTRY -->
     <div id="entry-screen" onclick="bootSystem()">
         <div class="entry-content">
             <div class="entry-title">INITIALIZE</div>
             <div class="entry-sub">[ CLICK TO START ]</div>
+            <div class="entry-hint">↑↑↓↓←→←→BA</div>
         </div>
     </div>
 
+    <!-- NOTIFICATIONS -->
     <div id="notification-area"></div>
 
+    <!-- CONTEXT MENU -->
     <div id="context-menu">
-        <div class="ctx-header">SYSTEM ACTIONS</div>
-        <div class="ctx-item" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> REBOOT</div>
-        <div class="ctx-item" onclick="toggleFullScreen()"><i class="fa-solid fa-expand"></i> FULLSCREEN</div>
+        <div class="ctx-header">SYSTEM</div>
+        <div class="ctx-item" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i> Reboot</div>
+        <div class="ctx-item" onclick="toggleFullScreen()"><i class="fa-solid fa-expand"></i> Fullscreen</div>
+        <div class="ctx-item" onclick="openAbout()"><i class="fa-solid fa-user"></i> About</div>
+        <div class="ctx-item" onclick="openShortcuts()"><i class="fa-solid fa-keyboard"></i> Shortcuts</div>
         <div class="ctx-divider"></div>
-        <div class="ctx-item" onclick="copyDiscord()"><i class="fa-brands fa-discord"></i> COPY DISCORD</div>
-        <div class="ctx-item" onclick="window.open('https://github.com', '_blank')"><i class="fa-brands fa-github"></i> SOURCE</div>
+        <div class="ctx-header">LINKS</div>
+        <div class="ctx-item" onclick="copyDiscord()"><i class="fa-brands fa-discord"></i> Copy Discord</div>
+        <div class="ctx-item" onclick="openLink('https://steamcommunity.com/profiles/76561199593591499/','Steam')"><i class="fa-brands fa-steam"></i> Steam</div>
+        <div class="ctx-item" onclick="openLink('https://soundcloud.com/adra-adra-853007141','SoundCloud')"><i class="fa-brands fa-soundcloud"></i> SoundCloud</div>
+        <div class="ctx-divider"></div>
+        <div class="ctx-header">TOOLS</div>
+        <div class="ctx-item" onclick="toggleTerminal()"><i class="fa-solid fa-terminal"></i> Terminal</div>
+        <div class="ctx-item" onclick="toggleMatrix()"><i class="fa-solid fa-table-cells"></i> Matrix Rain</div>
+        <div class="ctx-item ctx-danger" onclick="triggerGlitch()"><i class="fa-solid fa-bolt"></i> Glitch</div>
     </div>
 
-    <div id="interface">
-        
-        <div class="top-bar">
-            <div class="top-left">
-                <div class="stat">VILNIUS <span class="accent">[-8°C]</span></div>
-                <div class="stat">TIME: <span id="clock">00:00:00</span></div>
+    <!-- ABOUT MODAL -->
+    <div id="about-modal" class="modal-backdrop" onclick="closeAbout(event)">
+        <div class="modal-box about-wide">
+
+            <!-- close -->
+            <i class="fa-solid fa-xmark about-close" onclick="closeAbout()"></i>
+
+            <!-- LEFT COL: Discord-style card -->
+            <div class="dc-card">
+                <div class="dc-banner"></div>
+                <div class="dc-avatar-wrap">
+                    <img id="about-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="pfp" class="dc-avatar">
+                    <div id="about-status" class="dc-status offline"></div>
+                </div>
+                <div class="dc-body">
+                    <div class="dc-display">Null</div>
+                    <div class="dc-tag">adra6</div>
+                    <div class="dc-divider"></div>
+                    <div class="dc-section-label">ABOUT ME</div>
+                    <div class="dc-bio">"I stopped looking for myself in other people's eyes and started finding myself in the work of my own hands."</div>
+                    <div class="dc-divider"></div>
+                    <div class="dc-section-label">MEMBER SINCE</div>
+                    <div class="dc-since"><i class="fa-brands fa-discord"></i> Nov 5, 2021</div>
+                    <div class="dc-divider"></div>
+                    <div class="dc-section-label">LINKS</div>
+                    <div class="dc-links">
+                        <div class="dc-link" onclick="openLink('https://guns.lol/adraa','guns.lol')">
+                            <i class="fa-solid fa-link"></i> guns.lol/adraa
+                        </div>
+                        <div class="dc-link" onclick="openLink('https://adrijus656.github.io/','Portfolio')">
+                            <i class="fa-brands fa-github"></i> adrijus656.github.io
+                        </div>
+                    </div>
+                    <div class="dc-divider"></div>
+                    <div class="dc-section-label">ACTIVITY</div>
+                    <div class="dc-activity" id="about-activity">
+                        <i class="fa-solid fa-circle" id="about-activity-dot"></i>
+                        <span id="about-activity-text">checking...</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="top-right" onclick="copyDiscord()">
-                <div class="profile-card">
-                    <div class="profile-text">
-                        <span id="discord-name">adra6</span>
-                        <span id="discord-activity">OFFLINE</span>
-                    </div>
-                    <div class="pfp-wrapper">
-                        <img id="discord-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="pfp">
-                        <div id="status-indicator" class="status-dot offline"></div>
-                    </div>
+            <!-- RIGHT COL: Skills + socials -->
+            <div class="about-right">
+                <div class="modal-header" style="margin-bottom:20px">
+                    <span class="modal-title">ABOUT // ADRAA</span>
+                </div>
+                <p class="about-bio-text">from Vilnius. music, and building things that look clean. probably awake way too late right now, gotta fix my sleep.</p>
+
+                <div class="about-skills" style="margin-top:20px">
+                    <div class="skill-label">// stack</div>
+                    <div class="skill-row"><span>JS / HTML / CSS</span><div class="skill-track"><div class="skill-bar" data-w="92"></div></div><span>92</span></div>
+                    <div class="skill-row"><span>UI Design</span><div class="skill-track"><div class="skill-bar" data-w="87"></div></div><span>87</span></div>
+                    <div class="skill-row"><span>Python</span><div class="skill-track"><div class="skill-bar" data-w="70"></div></div><span>70</span></div>
+                    <div class="skill-row"><span>Progress Path</span><div class="skill-track"><div class="skill-bar" data-w="99"></div></div><span>99</span></div>
+                </div>
+
+                <div class="about-links" style="margin-top:20px">
+                    <div class="about-link" onclick="copyDiscord()"><i class="fa-brands fa-discord"></i> adra6</div>
+                    <div class="about-link" onclick="openLink('https://steamcommunity.com/profiles/76561199593591499/','Steam')"><i class="fa-brands fa-steam"></i> Steam</div>
+                    <div class="about-link" onclick="openLink('https://soundcloud.com/adra-adra-853007141','SoundCloud')"><i class="fa-brands fa-soundcloud"></i> SoundCloud</div>
+                    <div class="about-link" onclick="openLink('https://guns.lol/adraa','guns.lol')"><i class="fa-solid fa-crosshairs"></i> guns.lol</div>
+                </div>
+
+                <div class="about-tags-row">
+                    <span class="about-tag">VILNIUS, LT</span>
+                    <span class="about-tag">SYNTAX</span>
+                    <span class="about-tag">01011</span>
+                    <span class="about-tag">ROOT</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SHORTCUTS MODAL -->
+    <div id="shortcuts-modal" class="modal-backdrop" onclick="closeShortcuts(event)">
+        <div class="modal-box modal-sm">
+            <div class="modal-header">
+                <span class="modal-title">SHORTCUTS</span>
+                <i class="fa-solid fa-xmark modal-close" onclick="closeShortcuts()"></i>
+            </div>
+            <div class="shortcuts-list">
+                <div class="sc-row"><kbd>Space</kbd><span>Play / Pause</span></div>
+                <div class="sc-row"><kbd>→ / ←</kbd><span>Next / Prev track</span></div>
+                <div class="sc-row"><kbd>↑ / ↓</kbd><span>Volume +/- 10</span></div>
+                <div class="sc-row"><kbd>M</kbd><span>Mute toggle</span></div>
+                <div class="sc-row"><kbd>T</kbd><span>Open terminal</span></div>
+                <div class="sc-row"><kbd>A</kbd><span>About panel</span></div>
+                <div class="sc-row"><kbd>?</kbd><span>This panel</span></div>
+                <div class="sc-row"><kbd>Esc</kbd><span>Close modals</span></div>
+                <div class="sc-row"><kbd>F</kbd><span>Fullscreen</span></div>
+                <div class="sc-row"><kbd>↑↑↓↓←→←→BA</kbd><span>???</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MATRIX CANVAS -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- INTERFACE -->
+    <div id="interface">
+
+        <div class="top-left">
+            <div class="stat">VILNIUS <span class="accent">[-8°C]</span></div>
+            <div class="stat">TIME: <span id="clock" class="accent">00:00:00</span></div>
+            <div class="stat">UP: <span id="uptime" class="accent">00:00:00</span></div>
+        </div>
+
+        <div class="top-right" onclick="copyDiscord()">
+            <div class="profile-card">
+                <div class="profile-text">
+                    <span id="discord-name">adra6</span>
+                    <span id="discord-activity">OFFLINE</span>
+                </div>
+                <div class="pfp-wrapper">
+                    <img id="discord-pfp" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="pfp">
+                    <div id="status-indicator" class="status-dot offline"></div>
                 </div>
             </div>
         </div>
@@ -61,81 +177,113 @@
             <h1 class="gradient-title">ADRAA</h1>
             <div class="tags">
                 <span class="tag">ROOT</span>
-                <span class="tag">HVH</span>
-                <span class="tag">DEV</span>
+                <span class="tag">SYNTAX</span>
+                <span class="tag">01011</span>
             </div>
+            <div class="hero-sub"><span id="typewriter"></span><span class="tw-cursor">|</span></div>
         </main>
 
-        <div class="player-widget tilt-card">
+        <!-- PLAYER -->
+        <div class="player-widget" id="player">
             <div class="player-header">
-                <div class="ph-left">
-                    <i class="fa-solid fa-music"></i>
-                    <span>NOW PLAYING</span>
-                </div>
+                <div class="ph-left"><i class="fa-solid fa-music"></i><span>NOW PLAYING</span></div>
                 <i class="fa-brands fa-soundcloud"></i>
             </div>
-            
             <div class="track-info">
-                <div id="track-name">WAITING FOR INPUT...</div>
+                <div class="track-name-wrap"><div id="track-name">WAITING FOR INPUT...</div></div>
                 <div class="artist-name">SoundCloud Stream</div>
             </div>
-
-            <div class="visualizer">
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <!-- PROGRESS BAR -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar" onclick="seekTo(event)">
+                    <div class="progress-fill" id="progress-fill"></div>
+                    <div class="progress-handle" id="progress-handle"></div>
+                </div>
+                <div class="progress-times">
+                    <span id="time-cur">0:00</span>
+                    <span id="time-dur">0:00</span>
+                </div>
             </div>
-
+            <!-- VISUALIZER -->
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                <div class="bar"></div><div class="bar"></div>
+            </div>
+            <!-- CONTROLS -->
             <div class="controls">
+                <i class="fa-solid fa-shuffle btn-side" id="btn-shuffle" onclick="toggleShuffle()" title="Shuffle"></i>
                 <i class="fa-solid fa-backward-step btn" onclick="prevSong()"></i>
                 <div class="play-btn" onclick="togglePlay()"><i class="fa-solid fa-play" id="play-icon"></i></div>
                 <i class="fa-solid fa-forward-step btn" onclick="nextSong()"></i>
+                <i class="fa-solid fa-repeat btn-side" id="btn-repeat" onclick="toggleRepeat()" title="Repeat"></i>
+            </div>
+            <!-- VOLUME -->
+            <div class="vol-row">
+                <i class="fa-solid fa-volume-low" id="vol-icon" onclick="toggleMute()"></i>
+                <input type="range" id="vol-slider" min="0" max="100" value="50">
+                <span id="vol-label">50</span>
             </div>
         </div>
 
+        <!-- DOCK -->
         <div class="dock-container">
             <div class="dock">
-                <div class="dock-item" onclick="openLink('https://steamcommunity.com/profiles/76561199593591499/', 'Steam')">
-                    <i class="fa-brands fa-steam"></i>
-                    <div class="tooltip">Steam</div>
+                <div class="dock-item" onclick="openLink('https://steamcommunity.com/profiles/76561199593591499/','Steam')">
+                    <i class="fa-brands fa-steam"></i><div class="tooltip">Steam</div>
                 </div>
-                <div class="dock-item" onclick="openLink('https://soundcloud.com/adra-adra-853007141', 'SoundCloud')">
-                    <i class="fa-brands fa-soundcloud"></i>
-                    <div class="tooltip">SoundCloud</div>
+                <div class="dock-item" onclick="openLink('https://soundcloud.com/adra-adra-853007141','SoundCloud')">
+                    <i class="fa-brands fa-soundcloud"></i><div class="tooltip">SoundCloud</div>
                 </div>
                 <div class="dock-item" onclick="toggleTerminal()">
-                    <i class="fa-solid fa-terminal"></i>
-                    <div class="tooltip">Terminal</div>
+                    <i class="fa-solid fa-terminal"></i><div class="tooltip">Terminal</div>
+                </div>
+                <div class="dock-item" onclick="openAbout()">
+                    <i class="fa-solid fa-user"></i><div class="tooltip">About</div>
+                </div>
+                <div class="dock-item" onclick="copyDiscord()">
+                    <i class="fa-brands fa-discord"></i><div class="tooltip">Discord</div>
+                </div>
+                <div class="dock-item" onclick="openShortcuts()">
+                    <i class="fa-solid fa-keyboard"></i><div class="tooltip">Shortcuts</div>
                 </div>
             </div>
         </div>
 
+        <!-- TERMINAL -->
         <div class="terminal-wrapper" id="terminal">
-            <div class="terminal-window tilt-card">
+            <div class="terminal-window">
                 <div class="term-bar">
                     <div class="traffic">
-                        <div class="dot close" onclick="toggleTerminal()"></div>
-                        <div class="dot min"></div>
-                        <div class="dot max"></div>
+                        <div class="dot dot-red"   onclick="toggleTerminal()"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
                     </div>
-                    <div class="term-title">root@adraa:~</div>
+                    <div class="term-title">root@adraa ~ <span id="tcursor">▋</span></div>
+                    <div style="opacity:0;font-size:0.6rem">v15.5</div>
                 </div>
                 <div class="term-content" id="term-output">
-                    <div class="sys-msg">AdraaOS v15.5 // SECURE</div>
-                    <div class="sys-msg">Type <span class="cmd">help</span> to begin.</div>
+                    <div><span style="color:#555">AdraaOS v15.5 // SECURE SHELL</span></div>
+                    <div><span style="color:#555">type <span style="color:#fff">help</span> to get started.</span></div>
                     <br>
                 </div>
                 <div class="input-area">
-                    <span class="prompt">➜</span>
-                    <span class="path">~</span>
-                    <input type="text" id="term-input" autocomplete="off" spellcheck="false">
+                    <span class="prompt-sym">➜</span>
+                    <span class="prompt-path">~</span>
+                    <input type="text" id="term-input" autocomplete="off" spellcheck="false" placeholder="">
                 </div>
             </div>
         </div>
 
-    </div>
+    </div><!-- /interface -->
 
-    <iframe id="sc-widget" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23ffffff&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false"></iframe>
-
+    <iframe id="sc-widget" allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/2181709799&color=%23ffffff&auto_play=false&hide_related=false&show_comments=false&show_user=false&show_reposts=false&show_teaser=false">
+    </iframe>
     <script src="https://w.soundcloud.com/player/api.js"></script>
     <script src="script.js"></script>
 </body>
